@@ -1,14 +1,16 @@
 import { Code } from "lucide-react";
 import Image from "next/image";
-import { useTheme } from "./ThemeProvider"; // Adjust the import path as needed
+import { useTheme } from "./ThemeProvider";
+import { useTranslation } from "react-i18next";
 
 interface FooterProps {
-  // Optional override - if not provided, uses theme context
   theme?: "light" | "dark";
 }
 
 const Footer = ({ theme: themeOverride }: FooterProps) => {
   const { isDarkMode } = useTheme();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   // Use override if provided, otherwise use theme context
   const theme = themeOverride || (isDarkMode ? "dark" : "light");
@@ -48,9 +50,14 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
   return (
     <footer
       className={`relative py-10 border-t ${currentTheme.border} ${currentTheme.background} shadow-inner backdrop-blur-md z-10`}
+      dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
+        <div
+          className={`flex flex-col ${
+            isRTL ? "md:flex-row-reverse" : "md:flex-row"
+          } justify-between items-center gap-6 md:gap-0`}
+        >
           {/* Logo + Name */}
           <div className="flex items-center gap-3 group">
             <div
@@ -65,7 +72,7 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
               >
                 <Image
                   src="/logo 2.PNG"
-                  alt="Codarise Logo"
+                  alt={t("footer.logoAlt")}
                   width={40}
                   height={40}
                   className="object-contain w-10 h-10 transition-transform duration-300 group-hover:scale-110"
@@ -80,16 +87,20 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
           </div>
 
           {/* Text */}
-          <div className="text-center md:text-right">
+          <div
+            className={`text-center ${
+              isRTL ? "md:text-left" : "md:text-right"
+            }`}
+          >
             <p
               className={`${currentTheme.text.copyright} text-sm uppercase tracking-widest font-medium`}
             >
-              © 2025 Codarise. All rights reserved.
+              {t("footer.copyright")}
             </p>
             <p
               className={`${currentTheme.text.tagline} italic text-xs mt-1 tracking-wide animate-pulse`}
             >
-              Rising through code.
+              {t("footer.tagline")}
             </p>
           </div>
         </div>

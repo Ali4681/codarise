@@ -4,13 +4,23 @@ import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
-import { useTheme } from "./ThemeProvider"; // Adjust import path as needed
+import { useTheme } from "./ThemeProvider";
+import { useTranslation } from "react-i18next";
 
 const team = [
   {
-    name: "Ali M Al-bayati",
-    role: "Web Development | Ai | React Native",
-    specialty: "Full-Stack Magic",
+    name: {
+      en: "Ali M Al-bayati",
+      ar: "علي محمد البياتي",
+    },
+    role: {
+      en: "Web Development | Ai | React Native",
+      ar: "تطوير الويب | الذكاء الاصطناعي | React Native",
+    },
+    specialty: {
+      en: "Full-Stack Magic",
+      ar: "سحر Full-Stack",
+    },
     image: "/ali.jpg",
     social: {
       github: "https://github.com/Ali4681",
@@ -18,9 +28,18 @@ const team = [
     },
   },
   {
-    name: "Beshr Sawas",
-    role: "Flutter Developer",
-    specialty: "Mobile App Wizardry",
+    name: {
+      en: "Beshr Sawas",
+      ar: "بشر سواس",
+    },
+    role: {
+      en: "Flutter Developer",
+      ar: "مطور Flutter",
+    },
+    specialty: {
+      en: "Mobile App Wizardry",
+      ar: "سحر تطبيقات الموبايل",
+    },
     image: "/b.jpg",
     social: {
       github: "https://github.com/beshr-sawas-02",
@@ -28,9 +47,18 @@ const team = [
     },
   },
   {
-    name: "Mohammad Alm Al-awad",
-    role: "Web Development | Ai | React Native",
-    specialty: "Full-Stack Magic",
+    name: {
+      en: "Mohammad Alm Al-awad",
+      ar: "محمد المحمد العوض",
+    },
+    role: {
+      en: "Web Development | Ai | React Native",
+      ar: "تطوير الويب | الذكاء الاصطناعي | React Native",
+    },
+    specialty: {
+      en: "Full-Stack Magic",
+      ar: "سحر Full-Stack",
+    },
     image: "/awaaadffff.jpg",
     social: {
       github: "https://github.com/mohammedhfhgcm5",
@@ -38,9 +66,18 @@ const team = [
     },
   },
   {
-    name: "Mohammed Barouda",
-    role: "Flutter Developer",
-    specialty: "Mobile App Wizardry",
+    name: {
+      en: "Mohammed Barouda",
+      ar: "محمد باروده",
+    },
+    role: {
+      en: "Flutter Developer",
+      ar: "مطور Flutter",
+    },
+    specialty: {
+      en: "Mobile App Wizardry",
+      ar: "سحر تطبيقات الموبايل",
+    },
     image: "/z.jpg",
     social: {
       github: "https://github.com/zakaria-ba02",
@@ -48,9 +85,18 @@ const team = [
     },
   },
   {
-    name: "Omar Haboub",
-    role: "Web Development | Ai | React Native",
-    specialty: "Full-Stack Magic",
+    name: {
+      en: "Omar Haboub",
+      ar: "عمر حبوب",
+    },
+    role: {
+      en: "Web Development | Ai | React Native",
+      ar: "تطوير الويب | الذكاء الاصطناعي | React Native",
+    },
+    specialty: {
+      en: "Full-Stack Magic",
+      ar: "سحر Full-Stack",
+    },
     image: "/om.jpg",
     social: {
       github: "https://github.com/omarhabboub13",
@@ -76,8 +122,15 @@ const cardVariants = {
 const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
   const [imageError, setImageError] = useState(false);
   const { isDarkMode } = useTheme();
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language;
 
-  const initials = member.name
+  const name = member.name[currentLang as "en" | "ar"] || member.name.en;
+  const role = member.role[currentLang as "en" | "ar"] || member.role.en;
+  const specialty =
+    member.specialty[currentLang as "en" | "ar"] || member.specialty.en;
+
+  const initials = name
     .split(" ")
     .map((n) => n[0])
     .join("");
@@ -116,7 +169,7 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
             {!imageError ? (
               <Image
                 src={member.image}
-                alt={member.name}
+                alt={name}
                 width={128}
                 height={128}
                 className="object-cover w-full h-full"
@@ -124,7 +177,7 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
               />
             ) : (
               <span
-                aria-label={`${member.name} initials`}
+                aria-label={`${name} initials`}
                 role="img"
                 className={`text-4xl font-extrabold text-transparent bg-clip-text drop-shadow-lg select-none ${
                   isDarkMode
@@ -146,7 +199,7 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
                 : "text-gray-900 group-hover:text-indigo-600"
             }`}
           >
-            {member.name}
+            {name}
           </h3>
           <p
             className={`mb-2 font-semibold tracking-wide text-center group-hover:underline decoration-2 transition-all duration-300 ${
@@ -155,18 +208,18 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
                 : "text-indigo-600 decoration-indigo-600"
             }`}
           >
-            {member.role}
+            {role}
           </p>
           <p
             className={`text-sm tracking-wide leading-relaxed text-center ${
               isDarkMode ? "text-gray-400" : "text-gray-600"
             }`}
           >
-            {member.specialty}
+            {specialty}
           </p>
         </div>
 
-        <div className="mt-4 flex justify-center space-x-3">
+        <div className="mt-4 flex justify-center space-x-3 rtl:space-x-reverse">
           <motion.a
             href={member.social.github}
             target="_blank"
@@ -177,7 +230,7 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
                 : "bg-gray-200/70 hover:bg-gray-300"
             }`}
             whileHover={{ y: -2 }}
-            aria-label={`${member.name}'s GitHub`}
+            aria-label={`${name}'s GitHub`}
           >
             <svg
               className={`w-4 h-4 ${
@@ -202,7 +255,7 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
               isDarkMode ? "bg-slate-700/70" : "bg-gray-200/70"
             }`}
             whileHover={{ y: -2 }}
-            aria-label={`${member.name}'s LinkedIn`}
+            aria-label={`${name}'s LinkedIn`}
           >
             <svg
               className={`w-4 h-4 ${
@@ -222,12 +275,16 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
 
 const TeamSection = () => {
   const { isDarkMode } = useTheme();
+  const { t } = useTranslation("common");
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   return (
     <section
       id="team"
       className={`py-20 relative ${isDarkMode ? "" : ""}`}
       aria-labelledby="team-title"
+      dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -246,7 +303,7 @@ const TeamSection = () => {
                   : "bg-gradient-to-r from-indigo-600 to-purple-600"
               }`}
             >
-              Meet Our Team
+              {t("team.title")}
             </span>
           </motion.h2>
 
@@ -259,8 +316,7 @@ const TeamSection = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
             viewport={{ once: true }}
           >
-            Young, ambitious developers ready to turn your ideas into digital
-            reality
+            {t("team.description")}
           </motion.p>
         </div>
 

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
+import { useTranslation } from "react-i18next";
 
 interface MagicParticle {
   id: number;
@@ -32,6 +33,7 @@ interface FloatingOrb {
 
 const ServicesSection = () => {
   const { isDarkMode } = useTheme();
+  const { t } = useTranslation("services");
   const [hoveredService, setHoveredService] = useState<number | null>(null);
   const [magicParticles, setMagicParticles] = useState<MagicParticle[]>([]);
   const [floatingOrbs, setFloatingOrbs] = useState<FloatingOrb[]>([]);
@@ -41,36 +43,36 @@ const ServicesSection = () => {
 
   const timelineSteps = [
     {
-      title: "Vision Conjuring",
-      desc: "We peer into the ethereal realm to capture your deepest digital desires",
+      title: t("timeline.steps.0.title"),
+      desc: t("timeline.steps.0.desc"),
       icon: Eye,
       color: "cyan",
       particles: 12,
     },
     {
-      title: "Spell Weaving",
-      desc: "Ancient algorithms are woven together with modern incantations",
+      title: t("timeline.steps.1.title"),
+      desc: t("timeline.steps.1.desc"),
       icon: Wand2,
       color: "purple",
       particles: 15,
     },
     {
-      title: "Digital Manifestation",
-      desc: "Your vision takes form in the physical realm through mystical coding",
+      title: t("timeline.steps.2.title"),
+      desc: t("timeline.steps.2.desc"),
       icon: Sparkles,
       color: "emerald",
       particles: 20,
     },
     {
-      title: "Power Channeling",
-      desc: "The creation is imbued with lightning-fast performance and infinite scalability",
+      title: t("timeline.steps.3.title"),
+      desc: t("timeline.steps.3.desc"),
       icon: Zap,
       color: "pink",
       particles: 18,
     },
     {
-      title: "Ascension Ritual",
-      desc: "Your digital creation rises to claim its throne in the cloud kingdom",
+      title: t("timeline.steps.4.title"),
+      desc: t("timeline.steps.4.desc"),
       icon: Crown,
       color: "yellow",
       particles: 25,
@@ -161,45 +163,42 @@ const ServicesSection = () => {
   const services = [
     {
       icon: Globe,
-      title: "Web Enchantment",
-      subtitle: "Mystical Web Development",
-      description:
-        "We weave digital spells into responsive, lightning-fast web experiences that captivate souls and convert visitors into loyal disciples.",
+      title: t("services.0.title"),
+      subtitle: t("services.0.subtitle"),
+      description: t("services.0.description"),
       features: [
-        "React Sorcery",
-        "Next.js Mastery",
-        "API Conjuring",
-        "Performance Alchemy",
+        t("services.0.features.0"),
+        t("services.0.features.1"),
+        t("services.0.features.2"),
+        t("services.0.features.3"),
       ],
       color: "cyan",
       magicLevel: 99,
     },
     {
       icon: Smartphone,
-      title: "Mobile Divination",
-      subtitle: "Prophetic App Creation",
-      description:
-        "Forge powerful mobile applications that transcend platforms, bringing your vision to life across the digital multiverse.",
+      title: t("services.1.title"),
+      subtitle: t("services.1.subtitle"),
+      description: t("services.1.description"),
       features: [
-        "Cross-Platform Magic",
-        "Native iOS Spells",
-        "Android Enchantments",
-        "Flutter Wizardry",
+        t("services.1.features.0"),
+        t("services.1.features.1"),
+        t("services.1.features.2"),
+        t("services.1.features.3"),
       ],
       color: "purple",
       magicLevel: 96,
     },
     {
       icon: Brain,
-      title: "AI Necromancy",
-      subtitle: "Artificial Intelligence Awakening",
-      description:
-        "Breathe artificial life into your digital realm with intelligent systems that learn, adapt, and evolve beyond mortal comprehension.",
+      title: t("services.2.title"),
+      subtitle: t("services.2.subtitle"),
+      description: t("services.2.description"),
       features: [
-        "Machine Learning",
-        "Neural Networks",
-        "Predictive Analytics",
-        "Automation Spells",
+        t("services.2.features.0"),
+        t("services.2.features.1"),
+        t("services.2.features.2"),
+        t("services.2.features.3"),
       ],
       color: "emerald",
       magicLevel: 90,
@@ -451,6 +450,7 @@ const ServicesSection = () => {
       className={`relative min-h-screen transition-colors duration-500 ${
         isDarkMode ? "" : ""
       }`}
+      dir={t("dir")}
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -551,7 +551,7 @@ const ServicesSection = () => {
               } bg-clip-text text-transparent mb-6`}
             >
               <span className="relative">
-                Mystical Services
+                {t("title")}
                 {/* Magical Aura */}
                 <div
                   className={`absolute -inset-6 bg-gradient-to-r ${
@@ -583,17 +583,15 @@ const ServicesSection = () => {
               isDarkMode ? "text-purple-200" : "text-purple-800"
             } max-w-4xl mx-auto leading-relaxed font-light`}
           >
-            Behold our arsenal of
+            {t("subtitle.part1")}
             <span
               className={`${
                 isDarkMode ? "text-cyan-400" : "text-cyan-600"
               } font-semibold`}
             >
-              {" "}
-              digital sorcery
+              {t("subtitle.highlight")}
             </span>{" "}
-            - each service forged in the fires of innovation and blessed by the
-            ancient codes of excellence.
+            {t("subtitle.part2")}
           </p>
         </div>
 
@@ -648,7 +646,7 @@ const ServicesSection = () => {
                           isDarkMode ? "text-slate-400" : "text-slate-600"
                         }`}
                       >
-                        PWR
+                        {t("powerLabel")}
                       </span>
                       <div
                         className={`w-16 h-2 ${
@@ -737,21 +735,20 @@ const ServicesSection = () => {
         <div ref={timelineRef} className="relative mt-32">
           <div className="text-center mb-16">
             <h2
-              className={`text-5xl font-bold text-transparent bg-gradient-to-r ${
+              className={`text-5xl font-bold text-transparent bg-gradient-to-r  ${
                 isDarkMode
                   ? "from-emerald-400 via-cyan-400 to-purple-400"
                   : "from-emerald-600 via-cyan-600 to-purple-600"
               } bg-clip-text mb-6`}
             >
-              The Sacred Ritual of Creation
+              {t("timeline.title")}
             </h2>
             <p
               className={`text-xl ${
                 isDarkMode ? "text-slate-300" : "text-slate-600"
               } max-w-3xl mx-auto`}
             >
-              Witness the ancient ceremony through which ideas transcend into
-              digital reality, following the mystical path of transformation.
+              {t("timeline.subtitle")}
             </p>
           </div>
 

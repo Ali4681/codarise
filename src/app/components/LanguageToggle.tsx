@@ -1,4 +1,3 @@
-// components/LanguageToggle.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -10,48 +9,68 @@ interface LanguageOption {
   label: string;
 }
 
+const DEFAULT_LANGUAGES = [
+  { value: "en", label: "English (en)" },
+  { value: "ar", label: "العربية (ar)" },
+];
+
 const LanguageToggle = () => {
-  const { t, i18n } = useTranslation();
-  const [availableLanguages, setAvailableLanguages] = useState<
-    LanguageOption[]
-  >([]);
+  const { i18n } = useTranslation();
+  const [availableLanguages, setAvailableLanguages] =
+    useState<LanguageOption[]>(DEFAULT_LANGUAGES);
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<LanguageOption | null>(null);
 
   useEffect(() => {
-    // Load available languages from manifest
-    fetch("/locales/languages.json")
-      .then((response) => response.json())
-      .then((languages) => {
-        const langArray = Object.entries(languages).map(([code, name]) => ({
+    // Try to load languages from manifest
+    const loadLanguages = async () => {
+      try {
+        const response = await fetch("/locales/languages.json");
+        const languages = await response.json();
+        const langOptions = Object.entries(languages).map(([code, name]) => ({
           value: code,
-          label: `${name} (${code})`, // Changed format to "Name (code)"
+          label: `${name} (${code})`,
         }));
-        setAvailableLanguages(langArray);
-      });
+        setAvailableLanguages(langOptions);
+      } catch (error) {
+        console.error("Failed to load languages:", error);
+        // Fallback to default languages
+        setAvailableLanguages(DEFAULT_LANGUAGES);
+      }
+    };
+
+    loadLanguages();
   }, []);
 
-  const changeLanguage = (selectedOption: LanguageOption | null) => {
-    if (selectedOption) {
-      i18n.changeLanguage(selectedOption.value);
+  useEffect(() => {
+    if (availableLanguages.length > 0) {
+      // Get current language from i18n or use first available as fallback
+      const currentLang =
+        availableLanguages.find((lang) => lang.value === i18n.language) ||
+        availableLanguages[0];
+      setSelectedLanguage(currentLang);
+    }
+  }, [availableLanguages, i18n.language]);
+
+  const handleLanguageChange = (option: LanguageOption | null) => {
+    if (option && i18n) {
+      setSelectedLanguage(option);
+      i18n.changeLanguage(option.value).catch((error) => {
+        console.error("Language change failed:", error);
+      });
     }
   };
 
-  if (availableLanguages.length === 0) return null;
-
-  const currentLanguage = availableLanguages.find(
-    (lang) => lang.value === i18n.language
-  );
+  if (!selectedLanguage) return null;
 
   return (
     <div className="w-48">
-      {" "}
-      {/* Slightly wider to accommodate the new format */}
       <Select
         options={availableLanguages}
-        value={currentLanguage}
-        onChange={changeLanguage}
+        value={selectedLanguage}
+        onChange={handleLanguageChange}
         isSearchable={false}
         classNamePrefix="react-select"
-        placeholder={t("language")}
         styles={{
           control: (base) => ({
             ...base,
@@ -60,6 +79,7 @@ const LanguageToggle = () => {
             minHeight: "auto",
             padding: "0.125rem 0",
             fontSize: "0.875rem",
+            backgroundColor: "transparent",
           }),
           option: (base, { isSelected }) => ({
             ...base,

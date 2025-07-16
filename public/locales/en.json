@@ -1,108 +1,131 @@
 {
-  "services": {
-    "title": "Mystical Services",
-    "subtitle": "Behold our arsenal of <1>digital sorcery</1> - each service forged in the fires of innovation and blessed by the ancient codes of excellence.",
-    "items": [
-      {
-        "title": "Web Enchantment",
-        "subtitle": "Mystical Web Development",
-        "description": "We weave digital spells into responsive, lightning-fast web experiences that captivate souls and convert visitors into loyal disciples.",
-        "features": [
-          "React Sorcery",
-          "Next.js Mastery",
-          "API Conjuring",
-          "Performance Alchemy"
-        ],
-        "magicLevel": 99
-      },
-      {
-        "title": "Mobile Divination",
-        "subtitle": "Prophetic App Creation",
-        "description": "Forge powerful mobile applications that transcend platforms, bringing your vision to life across the digital multiverse.",
-        "features": [
-          "Cross-Platform Magic",
-          "Native iOS Spells",
-          "Android Enchantments",
-          "Flutter Wizardry"
-        ],
-        "magicLevel": 96
-      },
-      {
-        "title": "AI Necromancy",
-        "subtitle": "Artificial Intelligence Awakening",
-        "description": "Breathe artificial life into your digital realm with intelligent systems that learn, adapt, and evolve beyond mortal comprehension.",
-        "features": [
-          "Machine Learning",
-          "Neural Networks",
-          "Predictive Analytics",
-          "Automation Spells"
-        ],
-        "magicLevel": 90
-      }
-    ],
-    "timeline": {
-      "title": "The Sacred Ritual of Creation",
-      "subtitle": "Witness the ancient ceremony through which ideas transcend into digital reality, following the mystical path of transformation.",
-      "steps": [
-        {
-          "title": "Vision Conjuring",
-          "description": "We peer into the ethereal realm to capture your deepest digital desires"
-        },
-        {
-          "title": "Spell Weaving",
-          "description": "Ancient algorithms are woven together with modern incantations"
-        },
-        {
-          "title": "Digital Manifestation",
-          "description": "Your vision takes form in the physical realm through mystical coding"
-        },
-        {
-          "title": "Power Channeling",
-          "description": "The creation is imbued with lightning-fast performance and infinite scalability"
-        },
-        {
-          "title": "Ascension Ritual",
-          "description": "Your digital creation rises to claim its throne in the cloud kingdom"
-        }
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "team": "Team",
+    "contact": "Contact"
+  },
+  "title": "Our Enchanted Services",
+  "subtitle": {
+    "part1": "Discover the magic behind our expertise. We craft digital experiences with a unique blend of innovation and ",
+    "highlight": "wizardry",
+    "part2": "."
+  },
+  "powerLabel": "Magic Power",
+  "services": [
+    {
+      "title": "Web Development Sorcery",
+      "subtitle": "Bringing your online presence to life with a touch of magic.",
+      "description": "Our web development service transmutes your ideas into captivating, high-performance websites. We weave intricate code with enchanting designs to create digital masterpieces that are both functional and visually stunning.",
+      "features": [
+        "Responsive & Intuitive Design",
+        "SEO Optimization Spells",
+        "Scalable Architecture Charms",
+        "E-commerce Potions"
+      ]
+    },
+    {
+      "title": "Mobile App Alchemy",
+      "subtitle": "Turning your concepts into powerful mobile applications.",
+      "description": "Through the ancient art of mobile app alchemy, we forge robust and user-friendly applications for all platforms. From initial concept to final deployment, we ensure a seamless and engaging experience for your users.",
+      "features": [
+        "Cross-Platform Compatibility",
+        "Native Performance Enhancement",
+        "Intuitive UI/UX Elixirs",
+        "Secure Data Encryption"
+      ]
+    },
+    {
+      "title": "AI & Automation Enchantment",
+      "subtitle": "Automating your world with intelligent solutions.",
+      "description": "Harness the arcane power of Artificial Intelligence and automation. We design intelligent systems that streamline your operations, analyze complex data, and conjure insights to drive your business forward with unprecedented efficiency.",
+      "features": [
+        "Custom AI Model Training",
+        "Workflow Automation Scripts",
+        "Data Analysis & Prediction",
+        "Intelligent Bot Integration"
       ]
     }
+  ],
+  "timeline": {
+    "title": "Our Magical Process",
+    "subtitle": "Every great creation follows a powerful incantation. Here's how we bring your visions to reality:",
+    "steps": [
+      {
+        "title": "Visionary Insight",
+        "desc": "We begin by gazing into the crystal ball of your aspirations, understanding your unique needs and grand visions to lay the mystical groundwork."
+      },
+      {
+        "title": "Design Incantation",
+        "desc": "Our master designers conjure captivating user interfaces and enchanting user experiences, ensuring your digital realm is both beautiful and intuitive."
+      },
+      {
+        "title": "Development Spellcasting",
+        "desc": "With ancient coding scrolls and modern frameworks, our developers weave powerful spells, transforming designs into fully functional and robust solutions."
+      },
+      {
+        "title": "Quality Assurance Rituals",
+        "desc": "Before unveiling our creations, we perform rigorous testing rituals to banish all bugs and glitches, ensuring a flawless and enchanting user experience."
+      },
+      {
+        "title": "Grand Launch & Beyond",
+        "desc": "The moment of truth! We orchestrate a magnificent launch, followed by ongoing support and optimization to ensure your digital legacy flourishes eternally."
+      }
+    ]
   },
+
   "contact": {
-    "title": "Contact Us",
-    "description": "Connect with our expert team through your preferred communication channel. We’re here to help you achieve your goals.",
-    "getInTouch": "Get in touch",
-    "card": {
-      "name": "Contact Us"
+    "whatsappTitle": "Chat on WhatsApp",
+    "phoneTitle": "Call Us",
+    "emailTitle": "Send an Email",
+
+    "contactUs": "Contact Us",
+    "getInTouch": "Get In Touch",
+    "connectWithTeam": "Connect with our expert team through your preferred communication channel. We're here to help you achieve your goals.",
+    "whatsappChat": "WhatsApp Chat",
+    "phoneCall": "Phone Call",
+    "sendEmail": "Send Email",
+    "readyToConnect": "Ready to connect with us?",
+    "whatsappDescription": "Instant messaging for quick responses and real-time communication",
+    "phoneDescription": "Direct voice communication for immediate assistance",
+    "emailDescription": "Detailed correspondence for complex inquiries"
+  },
+  "Get in touch": "Get in touch",
+  "footer": {
+    "logoAlt": "Codarise Logo",
+    "copyright": "© 2025 Codarise. All rights reserved.",
+    "tagline": "Rising through code."
+  },
+  "hero": {
+    "ariaLabel": "Hero section",
+    "title": "We Rise Through Code",
+    "subtitle": "Building Digital Futures with Magical Code",
+    "primaryButton": "Start Your Journey",
+    "secondaryButton": "View Our Magic"
+  },
+  "servicess": {
+    "title": "Our Magical Services",
+    "subtitle": "We offer a complete suite of digital services to help your business rise to new heights",
+    "webDev": {
+      "title": "Web Development",
+      "description": "Modern, responsive websites built with cutting-edge technologies"
+    },
+    "mobileApps": {
+      "title": "Mobile Apps",
+      "description": "Native and cross-platform mobile applications that enchant users"
+    },
+    "uiUx": {
+      "title": "UI/UX Design",
+      "description": "Beautiful, intuitive designs that create magical user experiences"
+    },
+    "customSolutions": {
+      "title": "Custom Solutions",
+      "description": "Tailored software solutions that perfectly fit your unique needs"
     }
   },
-  "modal": {
-    "body": "Ready to connect with us?",
-    "whatsapp": {
-      "title": "WhatsApp Chat"
-    },
-    "call": {
-      "title": "Phone Call"
-    },
-    "email": {
-      "title": "Send Email"
-    }
-  },
-  "card": {
-    "whatsapp": {
-      "title": "WhatsApp Chat",
-      "description": "Instant messaging for quick responses and real-time communication"
-    },
-    "call": {
-      "title": "Phone Call",
-      "description": "Direct voice communication for immediate assistance"
-    },
-    "email": {
-      "title": "Email Us",
-      "description": "Detailed correspondence for complex inquiries"
-    }
+  "team": {
+    "title": "Meet Our Team",
+    "description": "Young, ambitious developers ready to turn your ideas into digital reality"
   }
-
-
-
-  
 }

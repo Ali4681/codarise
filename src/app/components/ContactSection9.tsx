@@ -8,7 +8,9 @@ import {
   Zap,
 } from "lucide-react";
 import { useState } from "react";
-import { useTheme } from "./ThemeProvider"; // Adjust import path as needed
+import { useTheme } from "./ThemeProvider";
+import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection"; // Import direction hook
 
 interface Contact {
   name: string;
@@ -18,13 +20,15 @@ interface Contact {
 
 const ContactPage = () => {
   const { isDarkMode } = useTheme();
+  const { t, i18n } = useTranslation();
+  const direction = i18n.dir(); // Get current language direction
   const [activeModal, setActiveModal] = useState<
     "whatsapp" | "call" | "email" | null
   >(null);
 
   const contacts: Contact[] = [
     {
-      name: "Contact Us",
+      name: t("contact.contactUs"),
       phoneNumber: "+963994919720",
       email: "codarise468@gmail.com",
     },
@@ -45,9 +49,9 @@ const ContactPage = () => {
 
   const ContactModal = ({ type }: { type: "whatsapp" | "call" | "email" }) => {
     const titles = {
-      whatsapp: "WhatsApp Chat",
-      call: "Phone Call",
-      email: "Send Email",
+      whatsapp: t("contact.whatsappChat"),
+      call: t("contact.phoneCall"),
+      email: t("contact.sendEmail"),
     };
 
     const icons = {
@@ -64,8 +68,8 @@ const ContactPage = () => {
 
     return (
       <div
-        id="contact"
         className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+        dir={direction} // Set direction for modal
       >
         <div
           className={`backdrop-blur-xl rounded-3xl p-8 max-w-md w-full border shadow-2xl ${
@@ -75,7 +79,11 @@ const ContactPage = () => {
           }`}
         >
           <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center space-x-3">
+            <div
+              className={`flex items-center ${
+                direction === "rtl" ? "space-x-reverse" : "space-x-3"
+              }`}
+            >
               <div
                 className={`bg-gradient-to-br ${
                   type === "whatsapp"
@@ -111,7 +119,7 @@ const ContactPage = () => {
               isDarkMode ? "text-gray-300" : "text-gray-600"
             }`}
           >
-            Ready to connect with us?
+            {t("contact.readyToConnect")}
           </p>
           <div className="space-y-4">
             {contacts.map((contact, index) => (
@@ -217,7 +225,9 @@ const ContactPage = () => {
         ></div>
 
         <div
-          className={`absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-300 ${
+          className={`absolute top-4 ${
+            direction === "rtl" ? "left-4" : "right-4"
+          } opacity-20 group-hover:opacity-40 transition-opacity duration-300 ${
             isDarkMode ? "text-white" : "text-gray-600"
           }`}
         >
@@ -225,13 +235,21 @@ const ContactPage = () => {
         </div>
 
         <div className="relative z-10">
-          <div className="flex items-start mb-6">
+          <div
+            className={`flex items-start mb-6 ${
+              direction === "rtl" ? "flex-row-reverse" : ""
+            }`}
+          >
             <div
-              className={`bg-gradient-to-br ${gradients[type]} p-4 rounded-2xl mr-6 shadow-lg`}
+              className={`bg-gradient-to-br ${
+                gradients[type]
+              } p-4 rounded-2xl ${
+                direction === "rtl" ? "ml-6" : "mr-6"
+              } shadow-lg`}
             >
               {icons[type]}
             </div>
-            <div>
+            <div className={direction === "rtl" ? "text-right" : "text-left"}>
               <h3
                 className={`text-2xl font-bold mb-2 ${
                   isDarkMode ? "text-white" : "text-gray-900"
@@ -249,13 +267,21 @@ const ContactPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div
+            className={`flex items-center justify-between ${
+              direction === "rtl" ? "flex-row-reverse" : ""
+            }`}
+          >
             <div
               className={`flex items-center text-transparent bg-gradient-to-r ${gradients[type]} bg-clip-text font-semibold text-lg`}
             >
-              <span>Get in touch</span>
+              <span>{t("Get in touch")}</span>
               <MoveRight
-                className={`ml-3 w-5 h-5 group-hover:translate-x-1 transition-all duration-300 ${
+                className={`${
+                  direction === "rtl" ? "mr-3 rotate-180" : "ml-3"
+                } w-5 h-5 group-hover:translate-x-${
+                  direction === "rtl" ? "-1" : "1"
+                } transition-all duration-300 ${
                   isDarkMode
                     ? "text-white/70 group-hover:text-white"
                     : "text-gray-600 group-hover:text-gray-900"
@@ -288,6 +314,7 @@ const ContactPage = () => {
     <section
       id="contact"
       className="py-20 relative min-h-screen overflow-hidden"
+      dir={direction} // Set direction for the section
     >
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {activeModal === "whatsapp" && <ContactModal type="whatsapp" />}
@@ -301,7 +328,7 @@ const ContactPage = () => {
             }`}
           >
             <Sparkles
-              className={`w-6 h-6 mr-2 ${
+              className={`w-6 h-6 ${direction === "rtl" ? "ml-2" : "mr-2"} ${
                 isDarkMode ? "text-yellow-400" : "text-yellow-500"
               }`}
             />
@@ -310,7 +337,7 @@ const ContactPage = () => {
                 isDarkMode ? "text-white" : "text-gray-800"
               }`}
             >
-              Get In Touch
+              {t("contact.getInTouch")}
             </span>
           </div>
 
@@ -322,7 +349,7 @@ const ContactPage = () => {
                   : "from-blue-500 via-purple-500 to-pink-500"
               }`}
             >
-              Contact Us
+              {t("contact.contactUs")}
             </span>
           </h2>
 
@@ -331,28 +358,27 @@ const ContactPage = () => {
               isDarkMode ? "text-gray-300" : "text-gray-700"
             }`}
           >
-            Connect with our expert team through your preferred communication
-            channel. We&rsquo;re here to help you achieve your goals.
+            {t("contact.connectWithTeam")}.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
           <ContactCard
             type="whatsapp"
-            title="WhatsApp Chat"
-            description="Instant messaging for quick responses and real-time communication"
+            title={t("contact.whatsappTitle")}
+            description={t("contact.whatsappDescription")}
           />
 
           <ContactCard
             type="call"
-            title="Phone Call"
-            description="Direct voice communication for immediate assistance"
+            title={t("contact.phoneTitle")}
+            description={t("contact.phoneDescription")}
           />
 
           <ContactCard
             type="email"
-            title="Email Us"
-            description="Detailed correspondence for complex inquiries"
+            title={t("contact.emailTitle")}
+            description={t("contact.emailDescription")}
           />
         </div>
       </div>

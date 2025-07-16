@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { m } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
+import LanguageToggle from "./LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 interface NavigationProps {
   activeSection: string;
@@ -12,6 +14,7 @@ interface NavigationProps {
 }
 
 const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHeight, setNavHeight] = useState(0);
@@ -51,11 +54,11 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
   }, [setActiveSection, navHeight]);
 
   const navItems = [
-    { id: "hero", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "services", label: "Services" },
-    { id: "team", label: "Team" },
-    { id: "contact", label: "Contact" },
+    { id: "hero", label: t("nav.home") },
+    { id: "about", label: t("nav.about") },
+    { id: "services", label: t("nav.services") },
+    { id: "team", label: t("nav.team") },
+    { id: "contact", label: t("nav.contact") },
   ];
 
   const scrollToSection = (sectionId: string) => {
@@ -82,7 +85,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
           ? "bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200/50 dark:border-purple-500/30 shadow-lg"
           : "bg-transparent"
       }`}
-      aria-label="Primary Navigation"
+      aria-label={t("nav.ariaLabel")}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-2">
@@ -96,7 +99,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
                 <div className="w-full h-full rounded-lg flex items-center justify-center">
                   <Image
                     src="/logo 2.PNG"
-                    alt="Company Logo"
+                    alt={t("nav.logoAlt")}
                     width={40}
                     height={40}
                     className="object-contain w-10 h-10 group-hover:scale-110 transition-transform duration-300"
@@ -135,6 +138,8 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
                 />
               </button>
             ))}
+            <LanguageToggle />
+
             <ThemeToggle />
           </div>
 
@@ -143,7 +148,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-slate-700 dark:text-white p-2 rounded-md hover:bg-slate-200/50 dark:hover:bg-purple-600/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
             aria-expanded={isOpen}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-label={isOpen ? t("nav.closeMenu") : t("nav.openMenu")}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>

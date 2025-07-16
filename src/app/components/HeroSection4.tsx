@@ -1,5 +1,7 @@
 import { Code, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection"; // Custom hook to get direction
 
 const FloatingParticles = () => {
   const [particles, setParticles] = useState<
@@ -46,8 +48,10 @@ const FloatingParticles = () => {
 };
 
 const HeroSection = () => {
+  const { t, i18n } = useTranslation();
   const [text, setText] = useState("");
-  const fullText = "We Rise Through Code";
+  const fullText = t("hero.title");
+  const direction = i18n.dir(); // Get current language direction
 
   useEffect(() => {
     let i = 0;
@@ -60,13 +64,14 @@ const HeroSection = () => {
       }
     }, 80);
     return () => clearInterval(timer);
-  }, []);
+  }, [fullText]);
 
   return (
     <section
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      aria-label="Hero section"
+      aria-label={t("hero.ariaLabel")}
+      dir={direction} // Set direction on the section
     >
       <FloatingParticles />
 
@@ -100,7 +105,9 @@ const HeroSection = () => {
         >
           {text}
           <span
-            className="inline-block ml-1 w-6 animate-blink text-slate-600 dark:text-slate-400"
+            className={`inline-block ${
+              direction === "rtl" ? "mr-1" : "ml-1"
+            } w-6 animate-blink text-slate-600 dark:text-slate-400`}
             aria-hidden="true"
           >
             |
@@ -108,7 +115,7 @@ const HeroSection = () => {
         </h1>
 
         <p className="max-w-xl mx-auto text-lg sm:text-xl text-slate-600 dark:text-gray-300 mb-12 tracking-wide animate-slide-up-fade">
-          Building Digital Futures with Magical Code
+          {t("hero.subtitle")}
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-6 animate-slide-up-delay">
@@ -120,7 +127,7 @@ const HeroSection = () => {
                        dark:hover:shadow-[0_0_25px_5px_rgba(139,92,246,0.7)]
                        transition-transform duration-400 ease-in-out"
           >
-            Start Your Journey
+            {t("hero.primaryButton")}
           </button>
           <button
             type="button"
@@ -129,7 +136,7 @@ const HeroSection = () => {
                        hover:bg-purple-500 hover:text-white
                        transition-colors duration-300"
           >
-            View Our Magic
+            {t("hero.secondaryButton")}
           </button>
         </div>
 
