@@ -10,7 +10,6 @@ import {
 import { useState } from "react";
 import { useTheme } from "./ThemeProvider";
 import { useTranslation } from "react-i18next";
-import { useDirection } from "./useDirection"; // Import direction hook
 
 interface Contact {
   name: string;

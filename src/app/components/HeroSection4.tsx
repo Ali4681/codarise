@@ -1,7 +1,6 @@
-import { Code, ChevronDown } from "lucide-react";
-import { useState, useEffect } from "react";
+import { ChevronDown, Code } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDirection } from "./useDirection"; // Custom hook to get direction
 
 const FloatingParticles = () => {
   const [particles, setParticles] = useState<

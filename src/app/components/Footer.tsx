@@ -1,4 +1,3 @@
-import { Code } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { useTranslation } from "react-i18next";
@@ -47,6 +46,16 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
 
   const currentTheme = themeStyles[theme];
 
+  // RTL-aware classes
+  const rtlClasses = {
+    container: isRTL ? "md:flex-row-reverse" : "md:flex-row",
+    logoContainer: isRTL ? "flex-row-reverse" : "flex-row",
+    textContainer: isRTL ? "md:text-left" : "md:text-right",
+    logoSpacing: isRTL ? "gap-3" : "gap-3",
+    gradientDirection: isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r",
+    animationDirection: isRTL ? "animate-gradient-x-rtl" : "animate-gradient-x",
+  };
+
   return (
     <footer
       className={`relative py-10 border-t ${currentTheme.border} ${currentTheme.background} shadow-inner backdrop-blur-md z-10`}
@@ -54,12 +63,10 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`flex flex-col ${
-            isRTL ? "md:flex-row-reverse" : "md:flex-row"
-          } justify-between items-center gap-6 md:gap-0`}
+          className={`flex flex-col ${rtlClasses.container} justify-between items-center gap-6 md:gap-0`}
         >
           {/* Logo + Name */}
-          <div className="flex items-center gap-3 group">
+          <div className={`flex items-center ${rtlClasses.logoSpacing} group`}>
             <div
               className={`relative w-12 h-12 p-0.5 rounded-xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-105 ${
                 theme === "dark"
@@ -80,38 +87,85 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
                 />
               </div>
             </div>
-            <div className="text-2xl font-extrabold tracking-wider">
-              <span className={currentTheme.text.company}>CODAR</span>
+            <div
+              className={`text-2xl font-extrabold tracking-wider ${
+                isRTL ? "font-arabic" : ""
+              }`}
+            >
+              <span
+                className={`${currentTheme.text.company} ${
+                  isRTL ? "ml-1" : "mr-1"
+                }`}
+              >
+                CODAR
+              </span>
               <span className="text-cyan-400">ISE</span>
             </div>
           </div>
 
-          {/* Text */}
-          <div
-            className={`text-center ${
-              isRTL ? "md:text-left" : "md:text-right"
-            }`}
-          >
+          {/* Text Content */}
+          <div className={`text-center ${rtlClasses.textContainer}`}>
             <p
-              className={`${currentTheme.text.copyright} text-sm uppercase tracking-widest font-medium`}
+              className={`${
+                currentTheme.text.copyright
+              } text-sm uppercase tracking-widest font-medium ${
+                isRTL ? "font-arabic tracking-normal" : ""
+              }`}
             >
               {t("footer.copyright")}
             </p>
             <p
-              className={`${currentTheme.text.tagline} italic text-xs mt-1 tracking-wide animate-pulse`}
+              className={`${
+                currentTheme.text.tagline
+              } italic text-xs mt-1 tracking-wide animate-pulse ${
+                isRTL ? "font-arabic tracking-normal not-italic" : ""
+              }`}
             >
               {t("footer.tagline")}
             </p>
           </div>
         </div>
+
+        {/* Additional RTL-aware decorative elements */}
+        <div className="relative mt-8">
+          <div
+            className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${currentTheme.glow} opacity-50`}
+          />
+
+          {/* RTL-aware decorative dots */}
+          <div
+            className={`flex justify-center items-center gap-2 mt-4 ${
+              isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
+            <div
+              className={`w-1 h-1 rounded-full ${
+                theme === "dark" ? "bg-purple-400/60" : "bg-purple-500/60"
+              } animate-pulse`}
+              style={{ animationDelay: "0s" }}
+            />
+            <div
+              className={`w-1 h-1 rounded-full ${
+                theme === "dark" ? "bg-cyan-400/60" : "bg-cyan-500/60"
+              } animate-pulse`}
+              style={{ animationDelay: "0.5s" }}
+            />
+            <div
+              className={`w-1 h-1 rounded-full ${
+                theme === "dark" ? "bg-purple-400/60" : "bg-purple-500/60"
+              } animate-pulse`}
+              style={{ animationDelay: "1s" }}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Subtle Glow Line */}
+      {/* Subtle Glow Line with RTL support */}
       <div
-        className={`absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r ${currentTheme.glow} blur-sm animate-gradient-x`}
+        className={`absolute inset-x-0 bottom-0 h-0.5 ${rtlClasses.gradientDirection} ${currentTheme.glow} blur-sm ${rtlClasses.animationDirection}`}
       />
 
-      {/* Extra Animation Keyframe */}
+      {/* Enhanced Animation Keyframes with RTL support */}
       <style jsx>{`
         @keyframes gradient-x {
           0%,
@@ -122,9 +176,73 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
             background-position: 100% center;
           }
         }
+
+        @keyframes gradient-x-rtl {
+          0%,
+          100% {
+            background-position: 100% center;
+          }
+          50% {
+            background-position: 0% center;
+          }
+        }
+
         .animate-gradient-x {
           background-size: 200% 100%;
           animation: gradient-x 5s ease infinite;
+        }
+
+        .animate-gradient-x-rtl {
+          background-size: 200% 100%;
+          animation: gradient-x-rtl 5s ease infinite;
+        }
+
+        /* Arabic font support */
+        .font-arabic {
+          font-family: "Amiri", "Noto Sans Arabic", "Arabic UI Text", sans-serif;
+        }
+
+        /* RTL-specific adjustments */
+        [dir="rtl"] .group:hover .group-hover\\:scale-105 {
+          transform: scale(1.05);
+        }
+
+        [dir="rtl"] .transition-transform {
+          transform-origin: center;
+        }
+
+        /* Enhanced RTL typography */
+        [dir="rtl"] .tracking-widest {
+          letter-spacing: 0.1em;
+        }
+
+        [dir="rtl"] .tracking-wide {
+          letter-spacing: 0.05em;
+        }
+
+        /* RTL-aware animations */
+        [dir="rtl"] .animate-pulse {
+          animation-direction: reverse;
+        }
+
+        /* Responsive RTL adjustments */
+        @media (max-width: 768px) {
+          [dir="rtl"] .text-center {
+            text-align: center;
+          }
+
+          [dir="rtl"] .flex-col {
+            align-items: center;
+          }
+        }
+
+        /* Enhanced hover effects for RTL */
+        [dir="rtl"] .group:hover {
+          transform: translateX(-2px);
+        }
+
+        [dir="ltr"] .group:hover {
+          transform: translateX(2px);
         }
       `}</style>
     </footer>

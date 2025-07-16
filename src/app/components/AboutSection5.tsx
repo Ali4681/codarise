@@ -33,13 +33,15 @@ interface FloatingOrb {
 
 const ServicesSection = () => {
   const { isDarkMode } = useTheme();
-  const { t } = useTranslation("services");
+  const { t, i18n } = useTranslation("services");
   const [hoveredService, setHoveredService] = useState<number | null>(null);
   const [magicParticles, setMagicParticles] = useState<MagicParticle[]>([]);
   const [floatingOrbs, setFloatingOrbs] = useState<FloatingOrb[]>([]);
   const [activeTimelineStep, setActiveTimelineStep] = useState(0);
   const timelineRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  const isRTL = i18n.dir() === "rtl";
 
   const timelineSteps = [
     {
@@ -450,7 +452,7 @@ const ServicesSection = () => {
       className={`relative min-h-screen transition-colors duration-500 ${
         isDarkMode ? "" : ""
       }`}
-      dir={t("dir")}
+      dir={i18n.dir()}
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -514,25 +516,33 @@ const ServicesSection = () => {
 
         {/* Geometric Shapes */}
         <div
-          className={`absolute top-10 left-10 w-32 h-32 border-2 ${
+          className={`absolute top-10 ${
+            isRTL ? "right-10" : "left-10"
+          } w-32 h-32 border-2 ${
             isDarkMode ? "border-purple-400/20" : "border-purple-500/20"
           } rotate-45 animate-spin opacity-30`}
           style={{ animationDuration: "25s" }}
         />
         <div
-          className={`absolute top-20 right-20 w-24 h-24 border-2 ${
+          className={`absolute top-20 ${
+            isRTL ? "left-20" : "right-20"
+          } w-24 h-24 border-2 ${
             isDarkMode ? "border-cyan-400/20" : "border-cyan-500/20"
           } animate-bounce opacity-20`}
         />
         <div
-          className={`absolute bottom-20 left-1/3 w-16 h-16 bg-gradient-to-r ${
+          className={`absolute bottom-20 ${
+            isRTL ? "right-1/3" : "left-1/3"
+          } w-16 h-16 bg-gradient-to-r ${
             isDarkMode
               ? "from-emerald-500/20 to-purple-500/20"
               : "from-emerald-400/20 to-purple-400/20"
           } rotate-12 animate-pulse`}
         />
         <div
-          className={`absolute bottom-40 right-1/4 w-20 h-20 border-2 ${
+          className={`absolute bottom-40 ${
+            isRTL ? "left-1/4" : "right-1/4"
+          } w-20 h-20 border-2 ${
             isDarkMode ? "border-pink-400/20" : "border-pink-500/20"
           } rounded-full animate-ping opacity-30`}
         />
@@ -735,11 +745,11 @@ const ServicesSection = () => {
         <div ref={timelineRef} className="relative mt-32">
           <div className="text-center mb-16">
             <h2
-              className={`text-5xl font-bold text-transparent bg-gradient-to-r  ${
+              className={`text-5xl font-bold text-transparent bg-gradient-to-r ${
                 isDarkMode
                   ? "from-emerald-400 via-cyan-400 to-purple-400"
                   : "from-emerald-600 via-cyan-600 to-purple-600"
-              } bg-clip-text mb-6`}
+              } bg-clip-text mb-6 px-4 py-2`} // Added padding
             >
               {t("timeline.title")}
             </h2>
@@ -755,7 +765,13 @@ const ServicesSection = () => {
           {/* Timeline */}
           <div className="relative">
             {/* Central Animated Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full">
+            <div
+              className={`absolute ${
+                isRTL ? "right-1/2" : "left-1/2"
+              } transform ${
+                isRTL ? "translate-x-1/2" : "-translate-x-1/2"
+              } w-1 h-full`}
+            >
               <div
                 className={`w-full h-full bg-gradient-to-b ${
                   isDarkMode
@@ -769,7 +785,7 @@ const ServicesSection = () => {
             <div className="space-y-24">
               {timelineSteps.map((step, index) => {
                 const IconComponent = step.icon;
-                const isLeft = index % 2 === 0;
+                const isLeft = isRTL ? index % 2 !== 0 : index % 2 === 0;
                 const colors = getColorClasses(step.color);
                 const isActive = activeTimelineStep === index;
                 const isPassed = activeTimelineStep > index;
@@ -786,7 +802,13 @@ const ServicesSection = () => {
                     {/* Content */}
                     <div
                       className={`w-5/12 ${
-                        isLeft ? "pr-8 text-right" : "pl-8 text-left"
+                        isLeft
+                          ? isRTL
+                            ? "pl-8 text-left"
+                            : "pr-8 text-right"
+                          : isRTL
+                          ? "pr-8 text-right"
+                          : "pl-8 text-left"
                       }`}
                     >
                       <div className="relative cursor-pointer">
@@ -853,14 +875,34 @@ const ServicesSection = () => {
 
                           {/* Step completion indicator */}
                           {isPassed && (
-                            <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full">
+                            <div
+                              className={`absolute -top-2 ${
+                                isLeft
+                                  ? isRTL
+                                    ? "-left-2"
+                                    : "-right-2"
+                                  : isRTL
+                                  ? "-right-2"
+                                  : "-left-2"
+                              } w-4 h-4 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full`}
+                            >
                               <div className="w-2 h-2 bg-white rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                             </div>
                           )}
 
                           {/* Active step indicator */}
                           {isActive && (
-                            <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-pulse" />
+                            <div
+                              className={`absolute -top-2 ${
+                                isLeft
+                                  ? isRTL
+                                    ? "-left-2"
+                                    : "-right-2"
+                                  : isRTL
+                                  ? "-right-2"
+                                  : "-left-2"
+                              } w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-pulse`}
+                            />
                           )}
                         </div>
                       </div>

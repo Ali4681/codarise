@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { ThemeProvider, useTheme } from "./ThemeProvider";
+import { useEffect, useState } from "react";
+import { useTheme } from "./ThemeProvider";
 
 type MysticalOrb = {
   id: number;
@@ -415,26 +415,5 @@ export const AnimatedBackground = () => {
         }
       `}</style>
     </div>
-  );
-};
-
-// Demo Component with Theme Toggle
-const ThemedAnimatedDemo = () => {
-  return (
-    <ThemeProvider>
-      <div className="min-h-screen relative">
-        <AnimatedBackground />
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4 text-white dark:text-white">
-              Mystical Animated Background
-            </h1>
-            <p className="text-lg text-white/80 dark:text-white/80">
-              Adapts to light and dark themes
-            </p>
-          </div>
-        </div>
-      </div>
-    </ThemeProvider>
   );
 };
