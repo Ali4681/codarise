@@ -1,0 +1,108 @@
+{
+  "services": {
+    "title": "Mystical Services",
+    "subtitle": "Behold our arsenal of <1>digital sorcery</1> - each service forged in the fires of innovation and blessed by the ancient codes of excellence.",
+    "items": [
+      {
+        "title": "Web Enchantment",
+        "subtitle": "Mystical Web Development",
+        "description": "We weave digital spells into responsive, lightning-fast web experiences that captivate souls and convert visitors into loyal disciples.",
+        "features": [
+          "React Sorcery",
+          "Next.js Mastery",
+          "API Conjuring",
+          "Performance Alchemy"
+        ],
+        "magicLevel": 99
+      },
+      {
+        "title": "Mobile Divination",
+        "subtitle": "Prophetic App Creation",
+        "description": "Forge powerful mobile applications that transcend platforms, bringing your vision to life across the digital multiverse.",
+        "features": [
+          "Cross-Platform Magic",
+          "Native iOS Spells",
+          "Android Enchantments",
+          "Flutter Wizardry"
+        ],
+        "magicLevel": 96
+      },
+      {
+        "title": "AI Necromancy",
+        "subtitle": "Artificial Intelligence Awakening",
+        "description": "Breathe artificial life into your digital realm with intelligent systems that learn, adapt, and evolve beyond mortal comprehension.",
+        "features": [
+          "Machine Learning",
+          "Neural Networks",
+          "Predictive Analytics",
+          "Automation Spells"
+        ],
+        "magicLevel": 90
+      }
+    ],
+    "timeline": {
+      "title": "The Sacred Ritual of Creation",
+      "subtitle": "Witness the ancient ceremony through which ideas transcend into digital reality, following the mystical path of transformation.",
+      "steps": [
+        {
+          "title": "Vision Conjuring",
+          "description": "We peer into the ethereal realm to capture your deepest digital desires"
+        },
+        {
+          "title": "Spell Weaving",
+          "description": "Ancient algorithms are woven together with modern incantations"
+        },
+        {
+          "title": "Digital Manifestation",
+          "description": "Your vision takes form in the physical realm through mystical coding"
+        },
+        {
+          "title": "Power Channeling",
+          "description": "The creation is imbued with lightning-fast performance and infinite scalability"
+        },
+        {
+          "title": "Ascension Ritual",
+          "description": "Your digital creation rises to claim its throne in the cloud kingdom"
+        }
+      ]
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Connect with our expert team through your preferred communication channel. We’re here to help you achieve your goals.",
+    "getInTouch": "Get in touch",
+    "card": {
+      "name": "Contact Us"
+    }
+  },
+  "modal": {
+    "body": "Ready to connect with us?",
+    "whatsapp": {
+      "title": "WhatsApp Chat"
+    },
+    "call": {
+      "title": "Phone Call"
+    },
+    "email": {
+      "title": "Send Email"
+    }
+  },
+  "card": {
+    "whatsapp": {
+      "title": "WhatsApp Chat",
+      "description": "Instant messaging for quick responses and real-time communication"
+    },
+    "call": {
+      "title": "Phone Call",
+      "description": "Direct voice communication for immediate assistance"
+    },
+    "email": {
+      "title": "Email Us",
+      "description": "Detailed correspondence for complex inquiries"
+    }
+  }
+
+
+
+  
+}
