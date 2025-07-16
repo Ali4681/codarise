@@ -1,14 +1,34 @@
 "use client";
 import { useEffect, useState } from "react";
-import Navigation from "./components/Navigation3";
-import HeroSection from "./components/HeroSection4";
-import AboutSection from "./components/AboutSection5";
-import ServicesSection from "./components/ServicesSection6";
-// import ProjectsSection from "./components/ProjectsSection8";
-import ContactSection from "./components/ContactSection9";
-import Footer from "./components/Footer";
-import TeamSection from "./components/TeamSection";
-import { AnimatedBackground } from "./components/AnimatedBackground2";
+const Navigation = dynamic(() => import("./components/Navigation3"), {
+  ssr: false,
+});
+const HeroSection = dynamic(() => import("./components/HeroSection4"), {
+  ssr: false,
+});
+const AboutSection = dynamic(() => import("./components/AboutSection5"), {
+  ssr: false,
+});
+const ServicesSection = dynamic(() => import("./components/ServicesSection6"), {
+  ssr: false,
+});
+const TeamSection = dynamic(() => import("./components/TeamSection"), {
+  ssr: false,
+});
+// ProjectsSection طالما معلّق، ما تستوردها الآن
+const ContactSection = dynamic(() => import("./components/ContactSection9"), {
+  ssr: false,
+});
+const Footer = dynamic(() => import("./components/Footer"), { ssr: false });
+const AnimatedBackground = dynamic(
+  () =>
+    import("./components/AnimatedBackground2").then(
+      (mod) => mod.AnimatedBackground
+    ),
+  { ssr: false }
+);
+
+import dynamic from "next/dynamic";
 
 export default function CodariseWebsite() {
   const [activeSection, setActiveSection] = useState("hero");
