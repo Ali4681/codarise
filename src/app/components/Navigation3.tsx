@@ -3,7 +3,6 @@
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { m } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 import LanguageToggle from "./LanguageToggle";
 import { useTranslation } from "react-i18next";
@@ -38,7 +37,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
   useEffect(() => {
     const handleScrollSpy = () => {
       const sections = ["hero", "about", "services", "team", "contact"];
-      const scrollPos = window.scrollY + navHeight + 10; // Adjusted for nav height
+      const scrollPos = window.scrollY + navHeight + 10;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
@@ -74,7 +73,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
       });
 
       setActiveSection(sectionId);
-      setIsOpen(false);
+      setIsOpen(false); // Close mobile menu after navigation
     }
   };
 
@@ -89,7 +88,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-2">
-          {/* Enhanced Logo Section with Text */}
+          {/* Logo Section */}
           <div className="flex items-center">
             <div
               className="relative group cursor-pointer flex items-center gap-2"
@@ -108,7 +107,6 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
                 </div>
               </div>
 
-              {/* Logo Text matching CODARISE style */}
               <div className="text-xl font-bold tracking-wide">
                 <span className="text-slate-800 dark:text-white">CODAR</span>
                 <span className="text-blue-600 dark:text-cyan-400">ISE</span>
@@ -139,7 +137,6 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
               </button>
             ))}
             <LanguageToggle />
-
             <ThemeToggle />
           </div>
 
@@ -154,35 +151,34 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isOpen && (
-          <m.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 p-4 shadow-lg border border-slate-200/50 dark:border-purple-500/30"
-            role="menu"
-          >
-            {navItems.map(({ id, label }, index) => (
-              <m.button
+        {/* Mobile Menu - Simple dropdown */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 p-4 shadow-lg border border-slate-200/50 dark:border-purple-500/30">
+            {navItems.map(({ id, label }) => (
+              <button
                 key={id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 * index }}
                 onClick={() => scrollToSection(id)}
-                className={`block w-full text-left py-3 px-4 text-lg font-semibold rounded-md transition-all duration-300 ${
+                className={`block w-full text-left py-3 px-4 text-lg font-semibold rounded-md transition-all duration-300 mb-2 last:mb-0 ${
                   activeSection === id
                     ? "bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-400 shadow-lg"
                     : "text-slate-700 dark:text-white hover:bg-purple-50 dark:hover:bg-purple-600/30 hover:text-purple-600 dark:hover:text-purple-300"
                 }`}
-                role="menuitem"
               >
                 {label}
-              </m.button>
+              </button>
             ))}
-          </m.div>
-        )}
+
+            {/* Mobile Theme and Language Toggles */}
+            <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-200/50 dark:border-purple-500/30">
+              <LanguageToggle />
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
       </div>
     </nav>
   );
