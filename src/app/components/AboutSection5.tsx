@@ -40,8 +40,19 @@ const ServicesSection = () => {
   const [activeTimelineStep, setActiveTimelineStep] = useState(0);
   const timelineRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const isRTL = i18n.dir() === "rtl";
+
+  useEffect(() => {
+    // Check if mobile on mount and on resize
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const timelineSteps = [
     {
@@ -83,29 +94,35 @@ const ServicesSection = () => {
 
   useEffect(() => {
     // Generate floating magic particles
-    const particles: MagicParticle[] = Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 6,
-      duration: 4 + Math.random() * 3,
-      color: ["cyan", "purple", "pink", "emerald", "yellow"][
-        Math.floor(Math.random() * 5)
-      ],
-    }));
+    const particles: MagicParticle[] = Array.from(
+      { length: isMobile ? 15 : 30 },
+      (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 6,
+        duration: 4 + Math.random() * 3,
+        color: ["cyan", "purple", "pink", "emerald", "yellow"][
+          Math.floor(Math.random() * 5)
+        ],
+      })
+    );
     setMagicParticles(particles);
 
-    // Generate floating orbs
-    const orbs: FloatingOrb[] = Array.from({ length: 8 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: 20 + Math.random() * 30,
-      speed: 15 + Math.random() * 25,
-      color: ["cyan", "purple", "emerald", "pink"][
-        Math.floor(Math.random() * 4)
-      ],
-    }));
+    // Generate floating orbs - fewer and smaller on mobile
+    const orbs: FloatingOrb[] = Array.from(
+      { length: isMobile ? 4 : 8 },
+      (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: isMobile ? 10 + Math.random() * 15 : 20 + Math.random() * 30,
+        speed: 15 + Math.random() * 25,
+        color: ["cyan", "purple", "emerald", "pink"][
+          Math.floor(Math.random() * 4)
+        ],
+      })
+    );
     setFloatingOrbs(orbs);
 
     // Scroll-based timeline activation
@@ -160,7 +177,7 @@ const ServicesSection = () => {
       window.removeEventListener("scroll", throttledScroll);
       if (scrollTimeout) clearTimeout(scrollTimeout);
     };
-  }, [timelineSteps.length]);
+  }, [timelineSteps.length, isMobile]);
 
   const services = [
     {
@@ -454,7 +471,7 @@ const ServicesSection = () => {
       }`}
       dir={i18n.dir()}
     >
-      {/* Animated Background Elements */}
+      {/* Animated Background Elements - Reduced on mobile */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Floating Magic Particles */}
         {magicParticles.map((particle) => (
@@ -475,7 +492,7 @@ const ServicesSection = () => {
           />
         ))}
 
-        {/* Floating Orbs */}
+        {/* Floating Orbs - Reduced on mobile */}
         {floatingOrbs.map((orb) => (
           <div
             key={orb.id}
@@ -495,103 +512,113 @@ const ServicesSection = () => {
           />
         ))}
 
-        {/* Mystical Grid */}
-        <div
-          className={`absolute inset-0 ${
-            isDarkMode ? "opacity-5" : "opacity-10"
-          }`}
-        >
-          <div className="grid grid-cols-20 gap-2 h-full">
-            {Array.from({ length: 200 }).map((_, i) => (
-              <div
-                key={i}
-                className={`border ${
-                  isDarkMode ? "border-cyan-500" : "border-cyan-300"
-                } animate-pulse`}
-                style={{ animationDelay: `${i * 0.05}s` }}
-              />
-            ))}
+        {/* Mystical Grid - Simplified on mobile */}
+        {!isMobile && (
+          <div
+            className={`absolute inset-0 ${
+              isDarkMode ? "opacity-5" : "opacity-10"
+            }`}
+          >
+            <div className="grid grid-cols-20 gap-2 h-full">
+              {Array.from({ length: 200 }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`border ${
+                    isDarkMode ? "border-cyan-500" : "border-cyan-300"
+                  } animate-pulse`}
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Geometric Shapes */}
-        <div
-          className={`absolute top-10 ${
-            isRTL ? "right-10" : "left-10"
-          } w-32 h-32 border-2 ${
-            isDarkMode ? "border-purple-400/20" : "border-purple-500/20"
-          } rotate-45 animate-spin opacity-30`}
-          style={{ animationDuration: "25s" }}
-        />
-        <div
-          className={`absolute top-20 ${
-            isRTL ? "left-20" : "right-20"
-          } w-24 h-24 border-2 ${
-            isDarkMode ? "border-cyan-400/20" : "border-cyan-500/20"
-          } animate-bounce opacity-20`}
-        />
-        <div
-          className={`absolute bottom-20 ${
-            isRTL ? "right-1/3" : "left-1/3"
-          } w-16 h-16 bg-gradient-to-r ${
-            isDarkMode
-              ? "from-emerald-500/20 to-purple-500/20"
-              : "from-emerald-400/20 to-purple-400/20"
-          } rotate-12 animate-pulse`}
-        />
-        <div
-          className={`absolute bottom-40 ${
-            isRTL ? "left-1/4" : "right-1/4"
-          } w-20 h-20 border-2 ${
-            isDarkMode ? "border-pink-400/20" : "border-pink-500/20"
-          } rounded-full animate-ping opacity-30`}
-        />
+        {/* Geometric Shapes - Reduced on mobile */}
+        {!isMobile && (
+          <>
+            <div
+              className={`absolute top-10 ${
+                isRTL ? "right-10" : "left-10"
+              } w-32 h-32 border-2 ${
+                isDarkMode ? "border-purple-400/20" : "border-purple-500/20"
+              } rotate-45 animate-spin opacity-30`}
+              style={{ animationDuration: "25s" }}
+            />
+            <div
+              className={`absolute top-20 ${
+                isRTL ? "left-20" : "right-20"
+              } w-24 h-24 border-2 ${
+                isDarkMode ? "border-cyan-400/20" : "border-cyan-500/20"
+              } animate-bounce opacity-20`}
+            />
+            <div
+              className={`absolute bottom-20 ${
+                isRTL ? "right-1/3" : "left-1/3"
+              } w-16 h-16 bg-gradient-to-r ${
+                isDarkMode
+                  ? "from-emerald-500/20 to-purple-500/20"
+                  : "from-emerald-400/20 to-purple-400/20"
+              } rotate-12 animate-pulse`}
+            />
+            <div
+              className={`absolute bottom-40 ${
+                isRTL ? "left-1/4" : "right-1/4"
+              } w-20 h-20 border-2 ${
+                isDarkMode ? "border-pink-400/20" : "border-pink-500/20"
+              } rounded-full animate-ping opacity-30`}
+            />
+          </>
+        )}
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 py-20">
-        {/* Enchanted Header */}
-        <div className="text-center mb-20">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 md:py-20">
+        {/* Enchanted Header - Adjusted for mobile */}
+        <div className="text-center mb-12 md:mb-20">
           <div className="relative inline-block">
             <h1
-              className={`text-6xl md:text-8xl font-bold bg-gradient-to-r ${
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r ${
                 isDarkMode
                   ? "from-cyan-400 via-purple-400 to-pink-400"
                   : "from-cyan-600 via-purple-600 to-pink-600"
-              } bg-clip-text text-transparent mb-6`}
+              } bg-clip-text text-transparent mb-4 md:mb-6`}
             >
               <span className="relative">
                 {t("title")}
-                {/* Magical Aura */}
-                <div
-                  className={`absolute -inset-6 bg-gradient-to-r ${
-                    isDarkMode
-                      ? "from-cyan-500/20 via-purple-500/20 to-pink-500/20"
-                      : "from-cyan-400/20 via-purple-400/20 to-pink-400/20"
-                  } blur-xl animate-pulse`}
-                />
+                {/* Magical Aura - Reduced on mobile */}
+                {!isMobile && (
+                  <div
+                    className={`absolute -inset-4 sm:-inset-6 bg-gradient-to-r ${
+                      isDarkMode
+                        ? "from-cyan-500/20 via-purple-500/20 to-pink-500/20"
+                        : "from-cyan-400/20 via-purple-400/20 to-pink-400/20"
+                    } blur-xl animate-pulse`}
+                  />
+                )}
               </span>
             </h1>
 
-            {/* Floating Magic Wand */}
-            <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 animate-bounce">
-              <Wand2
-                className={`w-16 h-16 ${
-                  isDarkMode ? "text-purple-400" : "text-purple-600"
-                } drop-shadow-lg`}
-              />
-              <div
-                className={`absolute inset-0 ${
-                  isDarkMode ? "bg-purple-400/20" : "bg-purple-600/20"
-                } rounded-full blur-lg animate-pulse`}
-              />
-            </div>
+            {/* Floating Magic Wand - Smaller on mobile */}
+            {!isMobile && (
+              <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <Wand2
+                  className={`w-12 h-12 sm:w-16 sm:h-16 ${
+                    isDarkMode ? "text-purple-400" : "text-purple-600"
+                  } drop-shadow-lg`}
+                />
+                <div
+                  className={`absolute inset-0 ${
+                    isDarkMode ? "bg-purple-400/20" : "bg-purple-600/20"
+                  } rounded-full blur-lg animate-pulse`}
+                />
+              </div>
+            )}
           </div>
 
           <p
-            className={`text-xl md:text-2xl ${
+            className={`text-base sm:text-lg md:text-xl lg:text-2xl ${
               isDarkMode ? "text-purple-200" : "text-purple-800"
-            } max-w-4xl mx-auto leading-relaxed font-light`}
+            } max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto leading-relaxed font-light`}
           >
             {t("subtitle.part1")}
             <span
@@ -605,8 +632,8 @@ const ServicesSection = () => {
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8 mb-20">
+        {/* Services Grid - Stacked on mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-20">
           {services.map((service, index) => {
             const IconComponent = service.icon;
             const colors = getColorClasses(service.color);
@@ -616,15 +643,21 @@ const ServicesSection = () => {
               <div
                 key={index}
                 className="group relative"
-                onMouseEnter={() => setHoveredService(index)}
-                onMouseLeave={() => setHoveredService(null)}
+                onMouseEnter={() => !isMobile && setHoveredService(index)}
+                onMouseLeave={() => !isMobile && setHoveredService(null)}
+                onClick={() =>
+                  isMobile &&
+                  setHoveredService(hoveredService === index ? null : index)
+                }
               >
-                {/* Glow Effect */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700`}
-                />
+                {/* Glow Effect - Reduced on mobile */}
+                {!isMobile && (
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700`}
+                  />
+                )}
 
-                {/* Main Card */}
+                {/* Main Card - Adjusted padding for mobile */}
                 <div
                   className={`relative ${
                     isDarkMode
@@ -632,24 +665,30 @@ const ServicesSection = () => {
                       : "bg-white/80 border-slate-200"
                   } backdrop-blur-sm border ${
                     colors.border
-                  } rounded-2xl p-8 hover:${
-                    colors.borderHover
-                  } transition-all duration-500 transform hover:scale-105 h-full`}
+                  } rounded-2xl p-6 md:p-8 ${
+                    !isMobile && `hover:${colors.borderHover}`
+                  } transition-all duration-500 transform ${
+                    isMobile && hoveredService === index
+                      ? "scale-[1.02]"
+                      : !isMobile
+                      ? "group-hover:scale-105"
+                      : ""
+                  } h-full`}
                 >
-                  {/* Service Icon */}
-                  <div className="flex items-center justify-between mb-6">
+                  {/* Service Icon - Smaller on mobile */}
+                  <div className="flex items-center justify-between mb-4 md:mb-6">
                     <div className="relative">
                       <IconComponent
-                        className={`w-12 h-12 ${colors.primary}`}
+                        className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 ${colors.primary}`}
                       />
-                      {isHovered && (
+                      {isHovered && !isMobile && (
                         <div
                           className={`absolute inset-0 ${colors.bg} rounded-full blur-md animate-pulse`}
                         />
                       )}
                     </div>
 
-                    {/* Magic Level Indicator */}
+                    {/* Magic Level Indicator - Smaller on mobile */}
                     <div className="flex items-center space-x-1">
                       <span
                         className={`text-xs ${
@@ -659,7 +698,7 @@ const ServicesSection = () => {
                         {t("powerLabel")}
                       </span>
                       <div
-                        className={`w-16 h-2 ${
+                        className={`w-12 sm:w-16 h-1.5 sm:h-2 ${
                           isDarkMode ? "bg-slate-700" : "bg-slate-200"
                         } rounded-full overflow-hidden`}
                       >
@@ -674,38 +713,40 @@ const ServicesSection = () => {
                     </div>
                   </div>
 
-                  {/* Title & Subtitle */}
-                  <h3 className={`text-2xl font-bold ${colors.primary} mb-2`}>
+                  {/* Title & Subtitle - Adjusted sizes for mobile */}
+                  <h3
+                    className={`text-xl sm:text-2xl font-bold ${colors.primary} mb-1 md:mb-2`}
+                  >
                     {service.title}
                   </h3>
                   <p
                     className={`${
                       isDarkMode ? "text-slate-400" : "text-slate-600"
-                    } text-sm mb-4 font-medium`}
+                    } text-xs sm:text-sm mb-3 md:mb-4 font-medium`}
                   >
                     {service.subtitle}
                   </p>
 
-                  {/* Description */}
+                  {/* Description - Smaller text on mobile */}
                   <p
                     className={`${
                       isDarkMode ? "text-slate-300" : "text-slate-600"
-                    } text-sm leading-relaxed mb-6`}
+                    } text-xs sm:text-sm leading-relaxed mb-4 md:mb-6`}
                   >
                     {service.description}
                   </p>
 
-                  {/* Features */}
-                  <div className="space-y-2">
+                  {/* Features - Smaller text on mobile */}
+                  <div className="space-y-1 md:space-y-2">
                     {service.features.map((feature, fIndex) => (
                       <div key={fIndex} className="flex items-center space-x-2">
                         <Diamond
-                          className={`w-3 h-3 ${colors.primary} opacity-60`}
+                          className={`w-2 h-2 sm:w-3 sm:h-3 ${colors.primary} opacity-60`}
                         />
                         <span
                           className={`${
                             isDarkMode ? "text-slate-400" : "text-slate-600"
-                          } text-sm`}
+                          } text-xs sm:text-sm`}
                         >
                           {feature}
                         </span>
@@ -713,8 +754,8 @@ const ServicesSection = () => {
                     ))}
                   </div>
 
-                  {/* Magic Particles for Hovered Card */}
-                  {isHovered && (
+                  {/* Magic Particles for Hovered Card - Reduced on mobile */}
+                  {isHovered && !isMobile && (
                     <div className="absolute inset-0 pointer-events-none">
                       {[...Array(8)].map((_, i) => (
                         <div
@@ -741,51 +782,57 @@ const ServicesSection = () => {
           })}
         </div>
 
-        {/* Magical Process Timeline */}
-        <div ref={timelineRef} className="relative mt-32">
-          <div className="text-center mb-16">
+        {/* Magical Process Timeline - Stacked on mobile */}
+        <div ref={timelineRef} className="relative mt-20 md:mt-32">
+          <div className="text-center mb-12 md:mb-16">
             <h2
-              className={`text-5xl font-bold text-transparent bg-gradient-to-r ${
+              className={`text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r ${
                 isDarkMode
                   ? "from-emerald-400 via-cyan-400 to-purple-400"
                   : "from-emerald-600 via-cyan-600 to-purple-600"
-              } bg-clip-text mb-6 px-4 py-2`} // Added padding
+              } bg-clip-text mb-4 md:mb-6 px-4 py-2`}
             >
               {t("timeline.title")}
             </h2>
             <p
-              className={`text-xl ${
+              className={`text-base sm:text-lg md:text-xl ${
                 isDarkMode ? "text-slate-300" : "text-slate-600"
-              } max-w-3xl mx-auto`}
+              } max-w-2xl sm:max-w-3xl mx-auto`}
             >
               {t("timeline.subtitle")}
             </p>
           </div>
 
-          {/* Timeline */}
+          {/* Timeline - Stacked on mobile */}
           <div className="relative">
-            {/* Central Animated Line */}
-            <div
-              className={`absolute ${
-                isRTL ? "right-1/2" : "left-1/2"
-              } transform ${
-                isRTL ? "translate-x-1/2" : "-translate-x-1/2"
-              } w-1 h-full`}
-            >
+            {/* Central Animated Line - Hidden on mobile */}
+            {!isMobile && (
               <div
-                className={`w-full h-full bg-gradient-to-b ${
-                  isDarkMode
-                    ? "from-cyan-400 via-purple-400 to-pink-400"
-                    : "from-cyan-500 via-purple-500 to-pink-500"
-                } rounded-full opacity-60`}
-              />
-            </div>
+                className={`absolute ${
+                  isRTL ? "right-1/2" : "left-1/2"
+                } transform ${
+                  isRTL ? "translate-x-1/2" : "-translate-x-1/2"
+                } w-1 h-full`}
+              >
+                <div
+                  className={`w-full h-full bg-gradient-to-b ${
+                    isDarkMode
+                      ? "from-cyan-400 via-purple-400 to-pink-400"
+                      : "from-cyan-500 via-purple-500 to-pink-500"
+                  } rounded-full opacity-60`}
+                />
+              </div>
+            )}
 
-            {/* Timeline Steps */}
-            <div className="space-y-24">
+            {/* Timeline Steps - Stacked on mobile */}
+            <div className="space-y-12 md:space-y-24">
               {timelineSteps.map((step, index) => {
                 const IconComponent = step.icon;
-                const isLeft = isRTL ? index % 2 !== 0 : index % 2 === 0;
+                const isLeft = isMobile
+                  ? true
+                  : isRTL
+                  ? index % 2 !== 0
+                  : index % 2 === 0;
                 const colors = getColorClasses(step.color);
                 const isActive = activeTimelineStep === index;
                 const isPassed = activeTimelineStep > index;
@@ -794,52 +841,68 @@ const ServicesSection = () => {
                 return (
                   <div
                     key={index}
-                    className={`relative flex items-center ${
-                      isLeft ? "flex-row" : "flex-row-reverse"
-                    } group`}
+                    className={`relative flex ${
+                      isMobile ? "flex-col" : "flex-row items-center"
+                    } ${isLeft ? "" : "flex-row-reverse"} group`}
                     onClick={() => setActiveTimelineStep(index)}
                   >
-                    {/* Content */}
+                    {/* Content - Full width on mobile */}
                     <div
-                      className={`w-5/12 ${
+                      className={`${isMobile ? "w-full" : "w-5/12"} ${
                         isLeft
-                          ? isRTL
+                          ? isRTL && !isMobile
                             ? "pl-8 text-left"
-                            : "pr-8 text-right"
-                          : isRTL
+                            : !isMobile
+                            ? "pr-8 text-right"
+                            : "text-left"
+                          : isRTL && !isMobile
                           ? "pr-8 text-right"
-                          : "pl-8 text-left"
-                      }`}
+                          : !isMobile
+                          ? "pl-8 text-left"
+                          : "text-left"
+                      } ${isMobile ? "mb-4" : ""}`}
                     >
                       <div className="relative cursor-pointer">
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-r ${
-                            colors.gradient
-                          } rounded-xl blur-xl transition-all duration-700 ${
-                            isActive
-                              ? "opacity-100"
-                              : isPassed
-                              ? "opacity-30"
-                              : "opacity-0 group-hover:opacity-50"
-                          }`}
-                        />
+                        {!isMobile && (
+                          <div
+                            className={`absolute inset-0 bg-gradient-to-r ${
+                              colors.gradient
+                            } rounded-xl blur-xl transition-all duration-700 ${
+                              isActive
+                                ? "opacity-100"
+                                : isPassed
+                                ? "opacity-30"
+                                : "opacity-0 group-hover:opacity-50"
+                            }`}
+                          />
+                        )}
                         <div
                           className={`relative ${
                             isDarkMode
                               ? "bg-black/40 border-slate-700/50"
                               : "bg-white/80 border-slate-200"
-                          } backdrop-blur-sm border rounded-xl p-6 transition-all duration-700 transform ${
+                          } backdrop-blur-sm border rounded-xl p-4 sm:p-6 transition-all duration-700 transform ${
                             isActive
-                              ? `${colors.borderHover} scale-105 ${colors.shadow} shadow-lg`
+                              ? `${colors.borderHover} ${
+                                  isMobile ? "scale-100" : "scale-105"
+                                } ${colors.shadow} shadow-lg`
                               : isPassed
-                              ? `${colors.border} opacity-80 scale-95`
+                              ? `${colors.border} opacity-80 ${
+                                  isMobile ? "scale-100" : "scale-95"
+                                }`
                               : isUpcoming
-                              ? `${colors.border} opacity-50 scale-90`
-                              : `${colors.border} hover:${colors.borderHover} hover:scale-102`
+                              ? `${colors.border} opacity-50 ${
+                                  isMobile ? "scale-100" : "scale-90"
+                                }`
+                              : `${colors.border} hover:${colors.borderHover} ${
+                                  isMobile
+                                    ? "hover:scale-100"
+                                    : "hover:scale-102"
+                                }`
                           }`}
                         >
                           <h3
-                            className={`text-2xl font-bold mb-3 transition-all duration-500 ${
+                            className={`text-xl sm:text-2xl font-bold mb-2 sm:mb-3 transition-all duration-500 ${
                               isActive
                                 ? `${colors.primary} text-shadow-lg`
                                 : isPassed
@@ -852,7 +915,7 @@ const ServicesSection = () => {
                             {step.title}
                           </h3>
                           <p
-                            className={`leading-relaxed transition-all duration-500 ${
+                            className={`leading-relaxed text-sm sm:text-base transition-all duration-500 ${
                               isActive
                                 ? isDarkMode
                                   ? "text-slate-200"
@@ -873,61 +936,83 @@ const ServicesSection = () => {
                             {step.desc}
                           </p>
 
-                          {/* Step completion indicator */}
+                          {/* Step completion indicator - Adjusted for mobile */}
                           {isPassed && (
                             <div
-                              className={`absolute -top-2 ${
-                                isLeft
+                              className={`absolute ${
+                                isMobile
+                                  ? "-bottom-2 left-1/2 transform -translate-x-1/2"
+                                  : isLeft
                                   ? isRTL
-                                    ? "-left-2"
-                                    : "-right-2"
+                                    ? "-left-2 -top-2"
+                                    : "-right-2 -top-2"
                                   : isRTL
-                                  ? "-right-2"
-                                  : "-left-2"
-                              } w-4 h-4 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full`}
+                                  ? "-right-2 -top-2"
+                                  : "-left-2 -top-2"
+                              } w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full`}
                             >
-                              <div className="w-2 h-2 bg-white rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                             </div>
                           )}
 
-                          {/* Active step indicator */}
+                          {/* Active step indicator - Adjusted for mobile */}
                           {isActive && (
                             <div
-                              className={`absolute -top-2 ${
-                                isLeft
+                              className={`absolute ${
+                                isMobile
+                                  ? "-bottom-2 left-1/2 transform -translate-x-1/2"
+                                  : isLeft
                                   ? isRTL
-                                    ? "-left-2"
-                                    : "-right-2"
+                                    ? "-left-2 -top-2"
+                                    : "-right-2 -top-2"
                                   : isRTL
-                                  ? "-right-2"
-                                  : "-left-2"
-                              } w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-pulse`}
+                                  ? "-right-2 -top-2"
+                                  : "-left-2 -top-2"
+                              } w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-pulse`}
                             />
                           )}
                         </div>
                       </div>
                     </div>
 
-                    {/* Center Icon */}
-                    <div className="relative w-2/12 flex justify-center">
+                    {/* Center Icon - Adjusted for mobile */}
+                    <div
+                      className={`relative ${
+                        isMobile
+                          ? "w-full my-4 flex justify-center"
+                          : "w-2/12 flex justify-center"
+                      }`}
+                    >
                       <div
-                        className={`relative w-16 h-16 border-4 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-700 cursor-pointer ${
+                        className={`relative ${
+                          isMobile ? "w-12 h-12" : "w-16 h-16"
+                        } border-4 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-700 cursor-pointer ${
                           isActive
-                            ? `${colors.bg} ${colors.borderHover} scale-125 ${colors.shadow} shadow-lg`
+                            ? `${colors.bg} ${colors.borderHover} ${
+                                isMobile ? "scale-110" : "scale-125"
+                              } ${colors.shadow} shadow-lg`
                             : isPassed
-                            ? `${colors.bg} ${colors.border} scale-110 opacity-80`
+                            ? `${colors.bg} ${colors.border} ${
+                                isMobile ? "scale-105" : "scale-110"
+                              } opacity-80`
                             : isUpcoming
                             ? `${
                                 isDarkMode
                                   ? "bg-slate-800 border-slate-600"
                                   : "bg-slate-100 border-slate-300"
-                              } scale-90 opacity-50`
-                            : `${colors.bg} ${colors.border} hover:scale-110`
+                              } ${
+                                isMobile ? "scale-95" : "scale-90"
+                              } opacity-50`
+                            : `${colors.bg} ${colors.border} ${
+                                isMobile ? "hover:scale-105" : "hover:scale-110"
+                              }`
                         }`}
                         onClick={() => setActiveTimelineStep(index)}
                       >
                         <IconComponent
-                          className={`w-8 h-8 transition-all duration-500 ${
+                          className={`${
+                            isMobile ? "w-5 h-5" : "w-8 h-8"
+                          } transition-all duration-500 ${
                             isActive
                               ? `${colors.primary} drop-shadow-lg`
                               : isPassed
@@ -949,10 +1034,16 @@ const ServicesSection = () => {
                           }`}
                         />
 
-                        {/* Active step particles */}
+                        {/* Active step particles - Reduced on mobile */}
                         {isActive && (
                           <div className="absolute inset-0 pointer-events-none">
-                            {[...Array(step.particles)].map((_, i) => (
+                            {[
+                              ...Array(
+                                isMobile
+                                  ? Math.floor(step.particles / 2)
+                                  : step.particles
+                              ),
+                            ].map((_, i) => (
                               <div
                                 key={i}
                                 className={`absolute w-1 h-1 bg-${step.color}-400 rounded-full opacity-80`}
@@ -972,21 +1063,21 @@ const ServicesSection = () => {
                       </div>
                     </div>
 
-                    {/* Spacer */}
-                    <div className="w-5/12" />
+                    {/* Spacer - Hidden on mobile */}
+                    {!isMobile && <div className="w-5/12" />}
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Timeline Controls */}
-          <div className="flex justify-center mt-12 space-x-4">
+          {/* Timeline Controls - Always visible */}
+          <div className="flex justify-center mt-8 md:mt-12 space-x-2 md:space-x-4">
             {timelineSteps.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setActiveTimelineStep(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                   activeTimelineStep === index
                     ? "bg-gradient-to-r from-cyan-400 to-purple-400 scale-125"
                     : "bg-slate-600 hover:bg-slate-500"
