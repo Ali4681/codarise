@@ -67,10 +67,23 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
         element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - navHeight;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
+      // For mobile, use a more aggressive scroll behavior
+      if (window.innerWidth < 768) {
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+
+        // Additional fallback for mobile browsers that might not support smooth scrolling
+        setTimeout(() => {
+          window.scrollTo(0, offsetPosition);
+        }, 100);
+      } else {
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
 
       setActiveSection(sectionId);
       setIsOpen(false); // Close mobile menu after navigation
@@ -151,31 +164,33 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
           </button>
         </div>
 
-        {/* Mobile Menu - Simple dropdown */}
+        {/* Mobile Menu - Scrollable dropdown */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 p-4 shadow-lg border border-slate-200/50 dark:border-purple-500/30">
-            {navItems.map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => scrollToSection(id)}
-                className={`block w-full text-left py-3 px-4 text-lg font-semibold rounded-md transition-all duration-300 mb-2 last:mb-0 ${
-                  activeSection === id
-                    ? "bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-400 shadow-lg"
-                    : "text-slate-700 dark:text-white hover:bg-purple-50 dark:hover:bg-purple-600/30 hover:text-purple-600 dark:hover:text-purple-300"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 shadow-lg border border-slate-200/50 dark:border-purple-500/30 max-h-[calc(100vh-100px)] overflow-y-auto">
+            <div className="p-4">
+              {navItems.map(({ id, label }) => (
+                <button
+                  key={id}
+                  onClick={() => scrollToSection(id)}
+                  className={`block w-full text-left py-3 px-4 text-lg font-semibold rounded-md transition-all duration-300 mb-2 last:mb-0 ${
+                    activeSection === id
+                      ? "bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-400 shadow-lg"
+                      : "text-slate-700 dark:text-white hover:bg-purple-50 dark:hover:bg-purple-600/30 hover:text-purple-600 dark:hover:text-purple-300"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
 
-            {/* Mobile Theme and Language Toggles */}
-            <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-200/50 dark:border-purple-500/30">
-              <LanguageToggle />
-              <ThemeToggle />
+              {/* Mobile Theme and Language Toggles */}
+              <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-200/50 dark:border-purple-500/30">
+                <LanguageToggle />
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </div>
