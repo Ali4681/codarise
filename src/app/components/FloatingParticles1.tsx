@@ -1,33 +1,64 @@
 import { useEffect, useState } from "react";
 
-const COLORS = [
-  "rgba(59, 130, 246, 0.6)", // blue-500
-  "rgba(139, 92, 246, 0.6)", // purple-500
-  "rgba(99, 102, 241, 0.6)", // indigo-500
-  "rgba(236, 72, 153, 0.5)", // pink-500
-  "rgba(14, 165, 233, 0.5)", // sky-500
-];
+interface FloatingParticlesProps {
+  theme?: "light" | "dark";
+  count?: number;
+}
 
-const FloatingParticles = () => {
-  // To avoid performance issues, adjust count by window width
-  const [count, setCount] = useState(50);
+const FloatingParticles = ({
+  theme = "dark",
+  count: initialCount = 50,
+}: FloatingParticlesProps) => {
+  // Theme-specific colors with different opacities for light/dark modes
+  const COLORS = [
+    theme === "dark"
+      ? "rgba(59, 130, 246, 0.6)" // blue-500 - more vibrant in dark
+      : "rgba(29, 78, 216, 0.3)", // blue-700 - more subtle in light
+    theme === "dark"
+      ? "rgba(139, 92, 246, 0.6)" // purple-500
+      : "rgba(124, 58, 237, 0.3)",
+    theme === "dark"
+      ? "rgba(99, 102, 241, 0.6)" // indigo-500
+      : "rgba(79, 70, 229, 0.3)",
+    theme === "dark"
+      ? "rgba(236, 72, 153, 0.5)" // pink-500
+      : "rgba(219, 39, 119, 0.3)",
+    theme === "dark"
+      ? "rgba(14, 165, 233, 0.5)" // sky-500
+      : "rgba(2, 132, 199, 0.3)",
+  ];
+
+  // Responsive particle count
+  const [count, setCount] = useState(initialCount);
   useEffect(() => {
-    const updateCount = () => setCount(window.innerWidth < 768 ? 25 : 50);
+    const updateCount = () => {
+      if (window.innerWidth < 640) {
+        setCount(Math.floor(initialCount * 0.4)); // 40% on mobile
+      } else if (window.innerWidth < 1024) {
+        setCount(Math.floor(initialCount * 0.7)); // 70% on tablet
+      } else {
+        setCount(initialCount); // Full count on desktop
+      }
+    };
+
     updateCount();
     window.addEventListener("resize", updateCount);
     return () => window.removeEventListener("resize", updateCount);
-  }, []);
+  }, [initialCount]);
 
-  // Generate particles data on mount (position, size, color, delay, duration)
+  // Generate particles with random properties
   const [particles] = useState(() =>
-    Array.from({ length: count }).map(() => ({
+    Array.from({ length: initialCount }).map(() => ({
       left: Math.random() * 100,
       top: Math.random() * 100,
       size: 1 + Math.random() * 3, // 1px to 4px diameter
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       animationDelay: Math.random() * 5 + "s",
       animationDuration: 4 + Math.random() * 6 + "s",
-      opacity: 0.2 + Math.random() * 0.6,
+      opacity:
+        theme === "dark"
+          ? 0.2 + Math.random() * 0.6
+          : 0.1 + Math.random() * 0.3, // More subtle in light mode
       translateXRange: Math.random() * 20 - 10, // -10 to +10 px drift
       translateYRange: Math.random() * 15 - 7.5, // -7.5 to +7.5 px drift
       rotateDirection: Math.random() > 0.5 ? 1 : -1,
@@ -37,8 +68,8 @@ const FloatingParticles = () => {
   );
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {particles.map((p, i) => (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+      {particles.slice(0, count).map((p, i) => (
         <span
           key={i}
           className="absolute rounded-full"

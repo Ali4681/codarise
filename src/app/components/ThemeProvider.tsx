@@ -1,14 +1,12 @@
 // components/ThemeProvider.tsx
 "use client";
-
 import { createContext, useContext, useState, useEffect } from "react";
 
 type ThemeContextType = {
   isDarkMode: boolean;
   toggleTheme: () => void;
   setTheme: (theme: "light" | "dark" | "system") => void;
-
-  isLoading: boolean; // Add loading state to prevent flash
+  isLoading: boolean;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -24,12 +22,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
-
       const shouldUseDark =
         savedTheme === "dark" || (!savedTheme && prefersDark);
-
       setIsDarkMode(shouldUseDark);
-
       if (shouldUseDark) {
         document.documentElement.classList.add("dark");
       } else {
@@ -63,7 +58,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
-
     if (newMode) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
@@ -73,9 +67,33 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setTheme = (theme: "light" | "dark" | "system") => {
+    if (theme === "system") {
+      localStorage.removeItem("theme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      setIsDarkMode(prefersDark);
+      if (prefersDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } else {
+      const isDark = theme === "dark";
+      setIsDarkMode(isDark);
+      localStorage.setItem("theme", theme);
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  };
+
   return (
     <ThemeContext.Provider
-      value={{ isDarkMode, toggleTheme, isLoading, setTheme(theme) {} }}
+      value={{ isDarkMode, toggleTheme, setTheme, isLoading }}
     >
       {children}
     </ThemeContext.Provider>

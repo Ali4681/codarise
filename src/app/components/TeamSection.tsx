@@ -4,6 +4,7 @@ import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
+import { useTheme } from "./ThemeProvider"; // Adjust import path as needed
 
 const team = [
   {
@@ -74,6 +75,8 @@ const cardVariants = {
 
 const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
   const [imageError, setImageError] = useState(false);
+  const { isDarkMode } = useTheme();
+
   const initials = member.name
     .split(" ")
     .map((n) => n[0])
@@ -84,20 +87,32 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
       <Tilt
         glareEnable={true}
         glareMaxOpacity={0.15}
-        glareColor="#8b5cf6"
+        glareColor={isDarkMode ? "#8b5cf6" : "#6366f1"}
         glarePosition="bottom"
         scale={1.05}
         transitionSpeed={400}
         tiltMaxAngleX={10}
         tiltMaxAngleY={10}
-        className="group cursor-pointer bg-slate-800/50 backdrop-blur-lg rounded-3xl p-6 border border-transparent hover:border-purple-500/70 transition-all duration-500 shadow-lg hover:shadow-purple-700/30 w-full flex flex-col"
+        className={`group cursor-pointer backdrop-blur-lg rounded-3xl p-6 border transition-all duration-500 shadow-lg w-full flex flex-col ${
+          isDarkMode
+            ? "bg-slate-800/50 border-transparent hover:border-purple-500/70 hover:shadow-purple-700/30"
+            : "bg-white/70 border-gray-200 hover:border-indigo-500/70 hover:shadow-indigo-500/20"
+        }`}
       >
         <div className="relative mb-6 flex justify-center">
           <div
             aria-hidden="true"
-            className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 animate-pulse-slow blur-xl opacity-70"
+            className={`absolute inset-0 rounded-full animate-pulse-slow blur-xl opacity-70 ${
+              isDarkMode
+                ? "bg-gradient-to-r from-blue-500 to-purple-600"
+                : "bg-gradient-to-r from-indigo-400 to-purple-500"
+            }`}
           />
-          <div className="relative w-32 h-32 rounded-full bg-slate-900/70 flex items-center justify-center border-4 border-transparent group-hover:border-purple-500 transition-colors duration-500 shadow-lg overflow-hidden">
+          <div
+            className={`relative w-32 h-32 rounded-full flex items-center justify-center border-4 border-transparent group-hover:border-purple-500 transition-colors duration-500 shadow-lg overflow-hidden ${
+              isDarkMode ? "bg-slate-900/70" : "bg-gray-100/90"
+            }`}
+          >
             {!imageError ? (
               <Image
                 src={member.image}
@@ -111,7 +126,11 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
               <span
                 aria-label={`${member.name} initials`}
                 role="img"
-                className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 drop-shadow-lg select-none"
+                className={`text-4xl font-extrabold text-transparent bg-clip-text drop-shadow-lg select-none ${
+                  isDarkMode
+                    ? "bg-gradient-to-r from-purple-400 to-blue-400"
+                    : "bg-gradient-to-r from-indigo-500 to-purple-500"
+                }`}
               >
                 {initials}
               </span>
@@ -120,13 +139,29 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
         </div>
 
         <div className="flex-grow">
-          <h3 className="text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-purple-400 text-center">
+          <h3
+            className={`text-xl font-bold mb-2 transition-colors duration-300 text-center ${
+              isDarkMode
+                ? "text-white group-hover:text-purple-400"
+                : "text-gray-900 group-hover:text-indigo-600"
+            }`}
+          >
             {member.name}
           </h3>
-          <p className="text-purple-400 mb-2 font-semibold tracking-wide text-center group-hover:underline decoration-purple-600 decoration-2 transition-all duration-300">
+          <p
+            className={`mb-2 font-semibold tracking-wide text-center group-hover:underline decoration-2 transition-all duration-300 ${
+              isDarkMode
+                ? "text-purple-400 decoration-purple-600"
+                : "text-indigo-600 decoration-indigo-600"
+            }`}
+          >
             {member.role}
           </p>
-          <p className="text-gray-400 text-sm tracking-wide leading-relaxed text-center">
+          <p
+            className={`text-sm tracking-wide leading-relaxed text-center ${
+              isDarkMode ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
             {member.specialty}
           </p>
         </div>
@@ -136,12 +171,18 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
             href={member.social.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-full bg-slate-700/70 flex items-center justify-center hover:bg-gray-700 transition-colors"
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              isDarkMode
+                ? "bg-slate-700/70 hover:bg-gray-700"
+                : "bg-gray-200/70 hover:bg-gray-300"
+            }`}
             whileHover={{ y: -2 }}
             aria-label={`${member.name}'s GitHub`}
           >
             <svg
-              className="w-4 h-4 text-white"
+              className={`w-4 h-4 ${
+                isDarkMode ? "text-white" : "text-gray-700"
+              }`}
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -157,12 +198,16 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
             href={member.social.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-full bg-slate-700/70 flex items-center justify-center hover:bg-blue-600 transition-colors"
+            className={`w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors ${
+              isDarkMode ? "bg-slate-700/70" : "bg-gray-200/70"
+            }`}
             whileHover={{ y: -2 }}
             aria-label={`${member.name}'s LinkedIn`}
           >
             <svg
-              className="w-4 h-4 text-white"
+              className={`w-4 h-4 ${
+                isDarkMode ? "text-white" : "text-gray-700"
+              }`}
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -176,10 +221,12 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
 };
 
 const TeamSection = () => {
+  const { isDarkMode } = useTheme();
+
   return (
     <section
       id="team"
-      className="py-20 relative bg-slate-900/30 backdrop-blur-sm"
+      className={`py-20 relative ${isDarkMode ? "" : ""}`}
       aria-labelledby="team-title"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -192,13 +239,21 @@ const TeamSection = () => {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span
+              className={`bg-clip-text text-transparent ${
+                isDarkMode
+                  ? "bg-gradient-to-r from-blue-400 to-purple-400"
+                  : "bg-gradient-to-r from-indigo-600 to-purple-600"
+              }`}
+            >
               Meet Our Team
             </span>
           </motion.h2>
 
           <motion.p
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
+            className={`text-xl max-w-3xl mx-auto ${
+              isDarkMode ? "text-gray-300" : "text-gray-600"
+            }`}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}

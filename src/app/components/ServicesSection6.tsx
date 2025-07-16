@@ -51,19 +51,19 @@ const ServicesSection = () => {
   return (
     <section
       id="services"
-      className="py-20 relative bg-gradient-to-b "
+      className="py-20 relative"
       aria-labelledby="services-title"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2
             id="services-title"
-            className="inline-block pb-1 text-5xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent leading-[1.2]"
+            className="inline-block pb-1 text-5xl font-extrabold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent leading-[1.2]"
           >
             Our Magical Services
           </h2>
 
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-600 dark:text-gray-300 max-w-3xl mx-auto">
             We offer a complete suite of digital services to help your business
             rise to new heights
           </p>
@@ -87,7 +87,7 @@ const ServicesSection = () => {
                 transitionSpeed={400}
                 tiltMaxAngleX={15}
                 tiltMaxAngleY={15}
-                className="group bg-slate-800/60 backdrop-blur-lg rounded-3xl p-8 border border-transparent hover:border-purple-500/60 transition-all duration-500 shadow-lg hover:shadow-purple-600/50 cursor-pointer"
+                className="group bg-white/70 dark:bg-slate-800/60 backdrop-blur-lg rounded-3xl p-8 border border-slate-200/50 dark:border-transparent hover:border-purple-300/60 dark:hover:border-purple-500/60 transition-all duration-500 shadow-lg hover:shadow-purple-400/30 dark:hover:shadow-purple-600/50 cursor-pointer"
               >
                 <div
                   className={`w-16 h-16 rounded-full bg-gradient-to-r ${color} flex items-center justify-center mb-6
@@ -99,10 +99,12 @@ const ServicesSection = () => {
                     focusable="false"
                   />
                 </div>
-                <h3 className="text-xl font-extrabold text-white mb-3 select-none">
+                <h3 className="text-xl font-extrabold text-slate-800 dark:text-white mb-3 select-none">
                   {title}
                 </h3>
-                <p className="text-gray-300 leading-relaxed">{description}</p>
+                <p className="text-slate-600 dark:text-gray-300 leading-relaxed">
+                  {description}
+                </p>
               </Tilt>
             </motion.div>
           ))}

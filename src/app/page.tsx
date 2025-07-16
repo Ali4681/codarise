@@ -7,8 +7,8 @@ import ServicesSection from "./components/ServicesSection6";
 // import ProjectsSection from "./components/ProjectsSection8";
 import ContactSection from "./components/ContactSection9";
 import Footer from "./components/Footer";
-import AnimatedBackground from "./components/AnimatedBackground2";
 import TeamSection from "./components/TeamSection";
+import { AnimatedBackground } from "./components/AnimatedBackground2";
 
 export default function CodariseWebsite() {
   const [activeSection, setActiveSection] = useState("hero");

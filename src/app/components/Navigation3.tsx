@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { m } from "framer-motion";
+import ThemeToggle from "./ThemeToggle";
 
 interface NavigationProps {
   activeSection: string;
@@ -78,7 +79,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-slate-900/90 backdrop-blur-lg border-b border-purple-500/30 shadow-lg"
+          ? "bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200/50 dark:border-purple-500/30 shadow-lg"
           : "bg-transparent"
       }`}
       aria-label="Primary Navigation"
@@ -106,40 +107,41 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
 
               {/* Logo Text matching CODARISE style */}
               <div className="text-xl font-bold tracking-wide">
-                <span className="text-white">CODAR</span>
-                <span className="text-cyan-400">ISE</span>
+                <span className="text-slate-800 dark:text-white">CODAR</span>
+                <span className="text-blue-600 dark:text-cyan-400">ISE</span>
               </div>
             </div>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-10">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map(({ id, label }) => (
               <button
                 key={id}
                 onClick={() => scrollToSection(id)}
-                className={`relative group text-white font-medium text-lg transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded-md px-2 py-1
+                className={`relative group text-slate-700 dark:text-white font-medium text-lg transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900 rounded-md px-2 py-1
                   ${
                     activeSection === id
-                      ? "text-purple-400"
-                      : "hover:text-purple-400"
+                      ? "text-purple-600 dark:text-purple-400"
+                      : "hover:text-purple-600 dark:hover:text-purple-400"
                   }`}
                 aria-current={activeSection === id ? "page" : undefined}
               >
                 {label}
                 <span
-                  className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 ${
+                  className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-400 dark:to-purple-400 transition-all duration-300 ${
                     activeSection === id ? "w-full" : "group-hover:w-full"
                   }`}
                 />
               </button>
             ))}
+            <ThemeToggle />
           </div>
 
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-white p-2 rounded-md hover:bg-purple-600/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+            className="md:hidden text-slate-700 dark:text-white p-2 rounded-md hover:bg-slate-200/50 dark:hover:bg-purple-600/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
             aria-expanded={isOpen}
             aria-label={isOpen ? "Close menu" : "Open menu"}
           >
@@ -154,7 +156,7 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 p-4 shadow-lg border border-purple-500/30"
+            className="md:hidden bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 p-4 shadow-lg border border-slate-200/50 dark:border-purple-500/30"
             role="menu"
           >
             {navItems.map(({ id, label }, index) => (
@@ -166,8 +168,8 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
                 onClick={() => scrollToSection(id)}
                 className={`block w-full text-left py-3 px-4 text-lg font-semibold rounded-md transition-all duration-300 ${
                   activeSection === id
-                    ? "bg-purple-600/30 text-purple-400 shadow-lg"
-                    : "text-white hover:bg-purple-600/30 hover:text-purple-300"
+                    ? "bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-400 shadow-lg"
+                    : "text-slate-700 dark:text-white hover:bg-purple-50 dark:hover:bg-purple-600/30 hover:text-purple-600 dark:hover:text-purple-300"
                 }`}
                 role="menuitem"
               >

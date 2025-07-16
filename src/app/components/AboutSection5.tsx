@@ -10,6 +10,7 @@ import {
   Diamond,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useTheme } from "./ThemeProvider";
 
 interface MagicParticle {
   id: number;
@@ -30,6 +31,7 @@ interface FloatingOrb {
 }
 
 const ServicesSection = () => {
+  const { isDarkMode } = useTheme();
   const [hoveredService, setHoveredService] = useState<number | null>(null);
   const [magicParticles, setMagicParticles] = useState<MagicParticle[]>([]);
   const [floatingOrbs, setFloatingOrbs] = useState<FloatingOrb[]>([]);
@@ -216,67 +218,227 @@ const ServicesSection = () => {
         bgHover: string;
         shadow: string;
         gradient: string;
+        dark: {
+          primary: string;
+          secondary: string;
+          border: string;
+          borderHover: string;
+          bg: string;
+          bgHover: string;
+          shadow: string;
+          gradient: string;
+        };
+        light: {
+          primary: string;
+          secondary: string;
+          border: string;
+          borderHover: string;
+          bg: string;
+          bgHover: string;
+          shadow: string;
+          gradient: string;
+        };
       }
     > = {
       cyan: {
-        primary: "text-cyan-400",
-        secondary: "text-cyan-300",
-        border: "border-cyan-500/30",
-        borderHover: "border-cyan-400/60",
-        bg: "bg-cyan-500/20",
-        bgHover: "bg-cyan-400/20",
-        shadow: "shadow-cyan-400/50",
-        gradient: "from-cyan-500/20 to-cyan-600/20",
+        primary: isDarkMode ? "text-cyan-400" : "text-cyan-600",
+        secondary: isDarkMode ? "text-cyan-300" : "text-cyan-500",
+        border: isDarkMode ? "border-cyan-500/30" : "border-cyan-400/50",
+        borderHover: isDarkMode ? "border-cyan-400/60" : "border-cyan-500/80",
+        bg: isDarkMode ? "bg-cyan-500/20" : "bg-cyan-400/20",
+        bgHover: isDarkMode ? "bg-cyan-400/20" : "bg-cyan-500/30",
+        shadow: isDarkMode ? "shadow-cyan-400/50" : "shadow-cyan-500/40",
+        gradient: isDarkMode
+          ? "from-cyan-500/20 to-cyan-600/20"
+          : "from-cyan-400/20 to-cyan-500/30",
+        dark: {
+          primary: "text-cyan-400",
+          secondary: "text-cyan-300",
+          border: "border-cyan-500/30",
+          borderHover: "border-cyan-400/60",
+          bg: "bg-cyan-500/20",
+          bgHover: "bg-cyan-400/20",
+          shadow: "shadow-cyan-400/50",
+          gradient: "from-cyan-500/20 to-cyan-600/20",
+        },
+        light: {
+          primary: "text-cyan-600",
+          secondary: "text-cyan-500",
+          border: "border-cyan-400/50",
+          borderHover: "border-cyan-500/80",
+          bg: "bg-cyan-400/20",
+          bgHover: "bg-cyan-500/30",
+          shadow: "shadow-cyan-500/40",
+          gradient: "from-cyan-400/20 to-cyan-500/30",
+        },
       },
       purple: {
-        primary: "text-purple-400",
-        secondary: "text-purple-300",
-        border: "border-purple-500/30",
-        borderHover: "border-purple-400/60",
-        bg: "bg-purple-500/20",
-        bgHover: "bg-purple-400/20",
-        shadow: "shadow-purple-400/50",
-        gradient: "from-purple-500/20 to-purple-600/20",
+        primary: isDarkMode ? "text-purple-400" : "text-purple-600",
+        secondary: isDarkMode ? "text-purple-300" : "text-purple-500",
+        border: isDarkMode ? "border-purple-500/30" : "border-purple-400/50",
+        borderHover: isDarkMode
+          ? "border-purple-400/60"
+          : "border-purple-500/80",
+        bg: isDarkMode ? "bg-purple-500/20" : "bg-purple-400/20",
+        bgHover: isDarkMode ? "bg-purple-400/20" : "bg-purple-500/30",
+        shadow: isDarkMode ? "shadow-purple-400/50" : "shadow-purple-500/40",
+        gradient: isDarkMode
+          ? "from-purple-500/20 to-purple-600/20"
+          : "from-purple-400/20 to-purple-500/30",
+        dark: {
+          primary: "text-purple-400",
+          secondary: "text-purple-300",
+          border: "border-purple-500/30",
+          borderHover: "border-purple-400/60",
+          bg: "bg-purple-500/20",
+          bgHover: "bg-purple-400/20",
+          shadow: "shadow-purple-400/50",
+          gradient: "from-purple-500/20 to-purple-600/20",
+        },
+        light: {
+          primary: "text-purple-600",
+          secondary: "text-purple-500",
+          border: "border-purple-400/50",
+          borderHover: "border-purple-500/80",
+          bg: "bg-purple-400/20",
+          bgHover: "bg-purple-500/30",
+          shadow: "shadow-purple-500/40",
+          gradient: "from-purple-400/20 to-purple-500/30",
+        },
       },
       emerald: {
-        primary: "text-emerald-400",
-        secondary: "text-emerald-300",
-        border: "border-emerald-500/30",
-        borderHover: "border-emerald-400/60",
-        bg: "bg-emerald-500/20",
-        bgHover: "bg-emerald-400/20",
-        shadow: "shadow-emerald-400/50",
-        gradient: "from-emerald-500/20 to-emerald-600/20",
+        primary: isDarkMode ? "text-emerald-400" : "text-emerald-600",
+        secondary: isDarkMode ? "text-emerald-300" : "text-emerald-500",
+        border: isDarkMode ? "border-emerald-500/30" : "border-emerald-400/50",
+        borderHover: isDarkMode
+          ? "border-emerald-400/60"
+          : "border-emerald-500/80",
+        bg: isDarkMode ? "bg-emerald-500/20" : "bg-emerald-400/20",
+        bgHover: isDarkMode ? "bg-emerald-400/20" : "bg-emerald-500/30",
+        shadow: isDarkMode ? "shadow-emerald-400/50" : "shadow-emerald-500/40",
+        gradient: isDarkMode
+          ? "from-emerald-500/20 to-emerald-600/20"
+          : "from-emerald-400/20 to-emerald-500/30",
+        dark: {
+          primary: "text-emerald-400",
+          secondary: "text-emerald-300",
+          border: "border-emerald-500/30",
+          borderHover: "border-emerald-400/60",
+          bg: "bg-emerald-500/20",
+          bgHover: "bg-emerald-400/20",
+          shadow: "shadow-emerald-400/50",
+          gradient: "from-emerald-500/20 to-emerald-600/20",
+        },
+        light: {
+          primary: "text-emerald-600",
+          secondary: "text-emerald-500",
+          border: "border-emerald-400/50",
+          borderHover: "border-emerald-500/80",
+          bg: "bg-emerald-400/20",
+          bgHover: "bg-emerald-500/30",
+          shadow: "shadow-emerald-500/40",
+          gradient: "from-emerald-400/20 to-emerald-500/30",
+        },
       },
       pink: {
-        primary: "text-pink-400",
-        secondary: "text-pink-300",
-        border: "border-pink-500/30",
-        borderHover: "border-pink-400/60",
-        bg: "bg-pink-500/20",
-        bgHover: "bg-pink-400/20",
-        shadow: "shadow-pink-400/50",
-        gradient: "from-pink-500/20 to-pink-600/20",
+        primary: isDarkMode ? "text-pink-400" : "text-pink-600",
+        secondary: isDarkMode ? "text-pink-300" : "text-pink-500",
+        border: isDarkMode ? "border-pink-500/30" : "border-pink-400/50",
+        borderHover: isDarkMode ? "border-pink-400/60" : "border-pink-500/80",
+        bg: isDarkMode ? "bg-pink-500/20" : "bg-pink-400/20",
+        bgHover: isDarkMode ? "bg-pink-400/20" : "bg-pink-500/30",
+        shadow: isDarkMode ? "shadow-pink-400/50" : "shadow-pink-500/40",
+        gradient: isDarkMode
+          ? "from-pink-500/20 to-pink-600/20"
+          : "from-pink-400/20 to-pink-500/30",
+        dark: {
+          primary: "text-pink-400",
+          secondary: "text-pink-300",
+          border: "border-pink-500/30",
+          borderHover: "border-pink-400/60",
+          bg: "bg-pink-500/20",
+          bgHover: "bg-pink-400/20",
+          shadow: "shadow-pink-400/50",
+          gradient: "from-pink-500/20 to-pink-600/20",
+        },
+        light: {
+          primary: "text-pink-600",
+          secondary: "text-pink-500",
+          border: "border-pink-400/50",
+          borderHover: "border-pink-500/80",
+          bg: "bg-pink-400/20",
+          bgHover: "bg-pink-500/30",
+          shadow: "shadow-pink-500/40",
+          gradient: "from-pink-400/20 to-pink-500/30",
+        },
       },
       yellow: {
-        primary: "text-yellow-400",
-        secondary: "text-yellow-300",
-        border: "border-yellow-500/30",
-        borderHover: "border-yellow-400/60",
-        bg: "bg-yellow-500/20",
-        bgHover: "bg-yellow-400/20",
-        shadow: "shadow-yellow-400/50",
-        gradient: "from-yellow-500/20 to-yellow-600/20",
+        primary: isDarkMode ? "text-yellow-400" : "text-yellow-600",
+        secondary: isDarkMode ? "text-yellow-300" : "text-yellow-500",
+        border: isDarkMode ? "border-yellow-500/30" : "border-yellow-400/50",
+        borderHover: isDarkMode
+          ? "border-yellow-400/60"
+          : "border-yellow-500/80",
+        bg: isDarkMode ? "bg-yellow-500/20" : "bg-yellow-400/20",
+        bgHover: isDarkMode ? "bg-yellow-400/20" : "bg-yellow-500/30",
+        shadow: isDarkMode ? "shadow-yellow-400/50" : "shadow-yellow-500/40",
+        gradient: isDarkMode
+          ? "from-yellow-500/20 to-yellow-600/20"
+          : "from-yellow-400/20 to-yellow-500/30",
+        dark: {
+          primary: "text-yellow-400",
+          secondary: "text-yellow-300",
+          border: "border-yellow-500/30",
+          borderHover: "border-yellow-400/60",
+          bg: "bg-yellow-500/20",
+          bgHover: "bg-yellow-400/20",
+          shadow: "shadow-yellow-400/50",
+          gradient: "from-yellow-500/20 to-yellow-600/20",
+        },
+        light: {
+          primary: "text-yellow-600",
+          secondary: "text-yellow-500",
+          border: "border-yellow-400/50",
+          borderHover: "border-yellow-500/80",
+          bg: "bg-yellow-400/20",
+          bgHover: "bg-yellow-500/30",
+          shadow: "shadow-yellow-500/40",
+          gradient: "from-yellow-400/20 to-yellow-500/30",
+        },
       },
       indigo: {
-        primary: "text-indigo-400",
-        secondary: "text-indigo-300",
-        border: "border-indigo-500/30",
-        borderHover: "border-indigo-400/60",
-        bg: "bg-indigo-500/20",
-        bgHover: "bg-indigo-400/20",
-        shadow: "shadow-indigo-400/50",
-        gradient: "from-indigo-500/20 to-indigo-600/20",
+        primary: isDarkMode ? "text-indigo-400" : "text-indigo-600",
+        secondary: isDarkMode ? "text-indigo-300" : "text-indigo-500",
+        border: isDarkMode ? "border-indigo-500/30" : "border-indigo-400/50",
+        borderHover: isDarkMode
+          ? "border-indigo-400/60"
+          : "border-indigo-500/80",
+        bg: isDarkMode ? "bg-indigo-500/20" : "bg-indigo-400/20",
+        bgHover: isDarkMode ? "bg-indigo-400/20" : "bg-indigo-500/30",
+        shadow: isDarkMode ? "shadow-indigo-400/50" : "shadow-indigo-500/40",
+        gradient: isDarkMode
+          ? "from-indigo-500/20 to-indigo-600/20"
+          : "from-indigo-400/20 to-indigo-500/30",
+        dark: {
+          primary: "text-indigo-400",
+          secondary: "text-indigo-300",
+          border: "border-indigo-500/30",
+          borderHover: "border-indigo-400/60",
+          bg: "bg-indigo-500/20",
+          bgHover: "bg-indigo-400/20",
+          shadow: "shadow-indigo-400/50",
+          gradient: "from-indigo-500/20 to-indigo-600/20",
+        },
+        light: {
+          primary: "text-indigo-600",
+          secondary: "text-indigo-500",
+          border: "border-indigo-400/50",
+          borderHover: "border-indigo-500/80",
+          bg: "bg-indigo-400/20",
+          bgHover: "bg-indigo-500/30",
+          shadow: "shadow-indigo-500/40",
+          gradient: "from-indigo-400/20 to-indigo-500/30",
+        },
       },
     };
     return colorMap[color] || colorMap.cyan;
@@ -286,7 +448,9 @@ const ServicesSection = () => {
     <div
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900"
+      className={`relative min-h-screen transition-colors duration-500 ${
+        isDarkMode ? "" : ""
+      }`}
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -294,7 +458,9 @@ const ServicesSection = () => {
         {magicParticles.map((particle) => (
           <div
             key={particle.id}
-            className={`absolute w-1.5 h-1.5 bg-${particle.color}-400 rounded-full opacity-60`}
+            className={`absolute w-1.5 h-1.5 bg-${particle.color}-${
+              isDarkMode ? "400" : "600"
+            } rounded-full ${isDarkMode ? "opacity-60" : "opacity-40"}`}
             style={{
               left: `${particle.x}%`,
               top: `${particle.y}%`,
@@ -311,7 +477,9 @@ const ServicesSection = () => {
         {floatingOrbs.map((orb) => (
           <div
             key={orb.id}
-            className={`absolute rounded-full opacity-10 bg-${orb.color}-500 blur-xl`}
+            className={`absolute rounded-full ${
+              isDarkMode ? "opacity-10" : "opacity-5"
+            } bg-${orb.color}-${isDarkMode ? "500" : "400"} blur-xl`}
             style={{
               left: `${orb.x}%`,
               top: `${orb.y}%`,
@@ -326,12 +494,18 @@ const ServicesSection = () => {
         ))}
 
         {/* Mystical Grid */}
-        <div className="absolute inset-0 opacity-5">
+        <div
+          className={`absolute inset-0 ${
+            isDarkMode ? "opacity-5" : "opacity-10"
+          }`}
+        >
           <div className="grid grid-cols-20 gap-2 h-full">
             {Array.from({ length: 200 }).map((_, i) => (
               <div
                 key={i}
-                className="border border-cyan-500 animate-pulse"
+                className={`border ${
+                  isDarkMode ? "border-cyan-500" : "border-cyan-300"
+                } animate-pulse`}
                 style={{ animationDelay: `${i * 0.05}s` }}
               />
             ))}
@@ -340,12 +514,28 @@ const ServicesSection = () => {
 
         {/* Geometric Shapes */}
         <div
-          className="absolute top-10 left-10 w-32 h-32 border-2 border-purple-400/20 rotate-45 animate-spin opacity-30"
+          className={`absolute top-10 left-10 w-32 h-32 border-2 ${
+            isDarkMode ? "border-purple-400/20" : "border-purple-500/20"
+          } rotate-45 animate-spin opacity-30`}
           style={{ animationDuration: "25s" }}
         />
-        <div className="absolute top-20 right-20 w-24 h-24 border-2 border-cyan-400/20 animate-bounce opacity-20" />
-        <div className="absolute bottom-20 left-1/3 w-16 h-16 bg-gradient-to-r from-emerald-500/20 to-purple-500/20 rotate-12 animate-pulse" />
-        <div className="absolute bottom-40 right-1/4 w-20 h-20 border-2 border-pink-400/20 rounded-full animate-ping opacity-30" />
+        <div
+          className={`absolute top-20 right-20 w-24 h-24 border-2 ${
+            isDarkMode ? "border-cyan-400/20" : "border-cyan-500/20"
+          } animate-bounce opacity-20`}
+        />
+        <div
+          className={`absolute bottom-20 left-1/3 w-16 h-16 bg-gradient-to-r ${
+            isDarkMode
+              ? "from-emerald-500/20 to-purple-500/20"
+              : "from-emerald-400/20 to-purple-400/20"
+          } rotate-12 animate-pulse`}
+        />
+        <div
+          className={`absolute bottom-40 right-1/4 w-20 h-20 border-2 ${
+            isDarkMode ? "border-pink-400/20" : "border-pink-500/20"
+          } rounded-full animate-ping opacity-30`}
+        />
       </div>
 
       {/* Main Content */}
@@ -353,24 +543,52 @@ const ServicesSection = () => {
         {/* Enchanted Header */}
         <div className="text-center mb-20">
           <div className="relative inline-block">
-            <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
+            <h1
+              className={`text-6xl md:text-8xl font-bold bg-gradient-to-r ${
+                isDarkMode
+                  ? "from-cyan-400 via-purple-400 to-pink-400"
+                  : "from-cyan-600 via-purple-600 to-pink-600"
+              } bg-clip-text text-transparent mb-6`}
+            >
               <span className="relative">
                 Mystical Services
                 {/* Magical Aura */}
-                <div className="absolute -inset-6 bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 blur-xl animate-pulse" />
+                <div
+                  className={`absolute -inset-6 bg-gradient-to-r ${
+                    isDarkMode
+                      ? "from-cyan-500/20 via-purple-500/20 to-pink-500/20"
+                      : "from-cyan-400/20 via-purple-400/20 to-pink-400/20"
+                  } blur-xl animate-pulse`}
+                />
               </span>
             </h1>
 
             {/* Floating Magic Wand */}
             <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 animate-bounce">
-              <Wand2 className="w-16 h-16 text-purple-400 drop-shadow-lg" />
-              <div className="absolute inset-0 bg-purple-400/20 rounded-full blur-lg animate-pulse" />
+              <Wand2
+                className={`w-16 h-16 ${
+                  isDarkMode ? "text-purple-400" : "text-purple-600"
+                } drop-shadow-lg`}
+              />
+              <div
+                className={`absolute inset-0 ${
+                  isDarkMode ? "bg-purple-400/20" : "bg-purple-600/20"
+                } rounded-full blur-lg animate-pulse`}
+              />
             </div>
           </div>
 
-          <p className="text-xl md:text-2xl text-purple-200 max-w-4xl mx-auto leading-relaxed font-light">
+          <p
+            className={`text-xl md:text-2xl ${
+              isDarkMode ? "text-purple-200" : "text-purple-800"
+            } max-w-4xl mx-auto leading-relaxed font-light`}
+          >
             Behold our arsenal of
-            <span className="text-cyan-400 font-semibold">
+            <span
+              className={`${
+                isDarkMode ? "text-cyan-400" : "text-cyan-600"
+              } font-semibold`}
+            >
               {" "}
               digital sorcery
             </span>{" "}
@@ -400,7 +618,15 @@ const ServicesSection = () => {
 
                 {/* Main Card */}
                 <div
-                  className={`relative bg-black/40 backdrop-blur-sm border ${colors.border} rounded-2xl p-8 hover:${colors.borderHover} transition-all duration-500 transform hover:scale-105 h-full`}
+                  className={`relative ${
+                    isDarkMode
+                      ? "bg-black/40 border-slate-700/50"
+                      : "bg-white/80 border-slate-200"
+                  } backdrop-blur-sm border ${
+                    colors.border
+                  } rounded-2xl p-8 hover:${
+                    colors.borderHover
+                  } transition-all duration-500 transform hover:scale-105 h-full`}
                 >
                   {/* Service Icon */}
                   <div className="flex items-center justify-between mb-6">
@@ -417,8 +643,18 @@ const ServicesSection = () => {
 
                     {/* Magic Level Indicator */}
                     <div className="flex items-center space-x-1">
-                      <span className="text-xs text-slate-400">PWR</span>
-                      <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <span
+                        className={`text-xs ${
+                          isDarkMode ? "text-slate-400" : "text-slate-600"
+                        }`}
+                      >
+                        PWR
+                      </span>
+                      <div
+                        className={`w-16 h-2 ${
+                          isDarkMode ? "bg-slate-700" : "bg-slate-200"
+                        } rounded-full overflow-hidden`}
+                      >
                         <div
                           className={`h-full bg-gradient-to-r ${colors.gradient} transition-all duration-1000`}
                           style={{ width: `${service.magicLevel}%` }}
@@ -431,15 +667,23 @@ const ServicesSection = () => {
                   </div>
 
                   {/* Title & Subtitle */}
-                  <h3 className={`text-2xl font-bold ${colors.secondary} mb-2`}>
+                  <h3 className={`text-2xl font-bold ${colors.primary} mb-2`}>
                     {service.title}
                   </h3>
-                  <p className="text-slate-400 text-sm mb-4 font-medium">
+                  <p
+                    className={`${
+                      isDarkMode ? "text-slate-400" : "text-slate-600"
+                    } text-sm mb-4 font-medium`}
+                  >
                     {service.subtitle}
                   </p>
 
                   {/* Description */}
-                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                  <p
+                    className={`${
+                      isDarkMode ? "text-slate-300" : "text-slate-600"
+                    } text-sm leading-relaxed mb-6`}
+                  >
                     {service.description}
                   </p>
 
@@ -450,7 +694,11 @@ const ServicesSection = () => {
                         <Diamond
                           className={`w-3 h-3 ${colors.primary} opacity-60`}
                         />
-                        <span className="text-slate-400 text-sm">
+                        <span
+                          className={`${
+                            isDarkMode ? "text-slate-400" : "text-slate-600"
+                          } text-sm`}
+                        >
                           {feature}
                         </span>
                       </div>
@@ -463,7 +711,9 @@ const ServicesSection = () => {
                       {[...Array(8)].map((_, i) => (
                         <div
                           key={i}
-                          className={`absolute w-1 h-1 bg-${service.color}-400 rounded-full opacity-80`}
+                          className={`absolute w-1 h-1 bg-${service.color}-${
+                            isDarkMode ? "400" : "600"
+                          } rounded-full opacity-80`}
                           style={{
                             left: `${Math.random() * 100}%`,
                             top: `${Math.random() * 100}%`,
@@ -486,10 +736,20 @@ const ServicesSection = () => {
         {/* Magical Process Timeline */}
         <div ref={timelineRef} className="relative mt-32">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-transparent bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text mb-6">
+            <h2
+              className={`text-5xl font-bold text-transparent bg-gradient-to-r ${
+                isDarkMode
+                  ? "from-emerald-400 via-cyan-400 to-purple-400"
+                  : "from-emerald-600 via-cyan-600 to-purple-600"
+              } bg-clip-text mb-6`}
+            >
               The Sacred Ritual of Creation
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p
+              className={`text-xl ${
+                isDarkMode ? "text-slate-300" : "text-slate-600"
+              } max-w-3xl mx-auto`}
+            >
               Witness the ancient ceremony through which ideas transcend into
               digital reality, following the mystical path of transformation.
             </p>
@@ -499,7 +759,13 @@ const ServicesSection = () => {
           <div className="relative">
             {/* Central Animated Line */}
             <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full">
-              <div className="w-full h-full bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400 rounded-full opacity-60" />
+              <div
+                className={`w-full h-full bg-gradient-to-b ${
+                  isDarkMode
+                    ? "from-cyan-400 via-purple-400 to-pink-400"
+                    : "from-cyan-500 via-purple-500 to-pink-500"
+                } rounded-full opacity-60`}
+              />
             </div>
 
             {/* Timeline Steps */}
@@ -539,7 +805,11 @@ const ServicesSection = () => {
                           }`}
                         />
                         <div
-                          className={`relative bg-black/40 backdrop-blur-sm border rounded-xl p-6 transition-all duration-700 transform ${
+                          className={`relative ${
+                            isDarkMode
+                              ? "bg-black/40 border-slate-700/50"
+                              : "bg-white/80 border-slate-200"
+                          } backdrop-blur-sm border rounded-xl p-6 transition-all duration-700 transform ${
                             isActive
                               ? `${colors.borderHover} scale-105 ${colors.shadow} shadow-lg`
                               : isPassed
@@ -565,12 +835,20 @@ const ServicesSection = () => {
                           <p
                             className={`leading-relaxed transition-all duration-500 ${
                               isActive
-                                ? "text-slate-200"
+                                ? isDarkMode
+                                  ? "text-slate-200"
+                                  : "text-slate-700"
                                 : isPassed
-                                ? "text-slate-300 opacity-70"
+                                ? isDarkMode
+                                  ? "text-slate-300 opacity-70"
+                                  : "text-slate-600 opacity-70"
                                 : isUpcoming
-                                ? "text-slate-400 opacity-40"
-                                : "text-slate-300"
+                                ? isDarkMode
+                                  ? "text-slate-400 opacity-40"
+                                  : "text-slate-500 opacity-40"
+                                : isDarkMode
+                                ? "text-slate-300"
+                                : "text-slate-600"
                             }`}
                           >
                             {step.desc}
@@ -600,7 +878,11 @@ const ServicesSection = () => {
                             : isPassed
                             ? `${colors.bg} ${colors.border} scale-110 opacity-80`
                             : isUpcoming
-                            ? `bg-slate-800 border-slate-600 scale-90 opacity-50`
+                            ? `${
+                                isDarkMode
+                                  ? "bg-slate-800 border-slate-600"
+                                  : "bg-slate-100 border-slate-300"
+                              } scale-90 opacity-50`
                             : `${colors.bg} ${colors.border} hover:scale-110`
                         }`}
                         onClick={() => setActiveTimelineStep(index)}
