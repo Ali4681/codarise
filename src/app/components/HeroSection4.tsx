@@ -1,6 +1,7 @@
 import { ChevronDown, Code } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection";
 
 const FloatingParticles = () => {
   const [particles, setParticles] = useState<
@@ -47,10 +48,10 @@ const FloatingParticles = () => {
 };
 
 const HeroSection = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const [text, setText] = useState("");
   const fullText = t("hero.title");
-  const direction = i18n.dir(); // Get current language direction
 
   useEffect(() => {
     let i = 0;
@@ -70,7 +71,7 @@ const HeroSection = () => {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       aria-label={t("hero.ariaLabel")}
-      dir={direction} // Set direction on the section
+      dir={dir}
     >
       <FloatingParticles />
 
@@ -105,7 +106,7 @@ const HeroSection = () => {
           {text}
           <span
             className={`inline-block ${
-              direction === "rtl" ? "mr-1" : "ml-1"
+              isRTL ? "mr-1" : "ml-1"
             } w-6 animate-blink text-slate-600 dark:text-slate-400`}
             aria-hidden="true"
           >
@@ -117,7 +118,11 @@ const HeroSection = () => {
           {t("hero.subtitle")}
         </p>
 
-        <div className="flex flex-col sm:flex-row justify-center gap-6 animate-slide-up-delay">
+        <div
+          className={`flex flex-col sm:flex-row justify-center gap-6 animate-slide-up-delay ${
+            isRTL ? "sm:flex-row-reverse" : ""
+          }`}
+        >
           <button
             type="button"
             className="px-10 py-4 rounded-full bg-gradient-to-r from-blue-600 to-purple-700

@@ -73,6 +73,7 @@ export default function ThemeToggle() {
           : "bg-white/80 hover:bg-slate-100/90"
       } backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl`}
       aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
       style={{
         transform: isPressed ? "scale(0.95)" : "scale(1)",
       }}

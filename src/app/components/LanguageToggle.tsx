@@ -112,10 +112,21 @@ const LanguageToggle: React.FC = () => {
 
       {/* Main Button */}
       <button
+        type="button"
         onClick={toggleLanguage}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         disabled={isAnimating}
+        aria-label={
+          nextLanguage
+            ? `Switch language to ${nextLanguage.fullLabel}`
+            : "Switch language"
+        }
+        title={
+          nextLanguage
+            ? `Switch language to ${nextLanguage.fullLabel}`
+            : "Switch language"
+        }
         className="relative w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-all duration-300 ease-out hover:scale-110 active:scale-95 focus:outline-none disabled:cursor-not-allowed overflow-hidden group"
         style={{
           backgroundColor: currentColors.background,

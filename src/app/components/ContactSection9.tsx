@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useTheme } from "./ThemeProvider";
 import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection";
 
 interface Contact {
   name: string;
@@ -19,8 +20,8 @@ interface Contact {
 
 const ContactPage = () => {
   const { isDarkMode } = useTheme();
-  const { t, i18n } = useTranslation();
-  const direction = i18n.dir(); // Get current language direction
+  const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
   const [activeModal, setActiveModal] = useState<
     "whatsapp" | "call" | "email" | null
   >(null);
@@ -28,7 +29,7 @@ const ContactPage = () => {
   const contacts: Contact[] = [
     {
       name: t("contact.contactUs"),
-      phoneNumber: "+963994919720",
+      phoneNumber: "+963967212983",
       email: "codarise468@gmail.com",
     },
   ];
@@ -59,16 +60,16 @@ const ContactPage = () => {
       email: <Mail className="w-5 h-5" />,
     };
 
-    const colors = {
-      whatsapp: "green",
-      call: "purple",
-      email: "orange",
+    const hoverBorders = {
+      whatsapp: "hover:border-green-400/50",
+      call: "hover:border-purple-400/50",
+      email: "hover:border-orange-400/50",
     };
 
     return (
       <div
         className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
-        dir={direction} // Set direction for modal
+        dir={dir}
       >
         <div
           className={`backdrop-blur-xl rounded-3xl p-8 max-w-md w-full border shadow-2xl ${
@@ -78,18 +79,14 @@ const ContactPage = () => {
           }`}
         >
           <div className="flex justify-between items-center mb-6">
-            <div
-              className={`flex items-center ${
-                direction === "rtl" ? "space-x-reverse" : "space-x-3"
-              }`}
-            >
+            <div className="flex items-center gap-3">
               <div
                 className={`bg-gradient-to-br ${
                   type === "whatsapp"
                     ? "from-green-400 to-emerald-500"
                     : type === "call"
-                    ? "from-purple-400 to-violet-500"
-                    : "from-orange-400 to-red-500"
+                      ? "from-purple-400 to-violet-500"
+                      : "from-orange-400 to-red-500"
                 } p-2 rounded-xl`}
               >
                 {icons[type]}
@@ -103,7 +100,10 @@ const ContactPage = () => {
               </h3>
             </div>
             <button
+              type="button"
               onClick={() => setActiveModal(null)}
+              aria-label="Close dialog"
+              title="Close dialog"
               className={`p-2 rounded-full transition-all ${
                 isDarkMode
                   ? "text-gray-400 hover:text-white hover:bg-white/10"
@@ -128,7 +128,7 @@ const ContactPage = () => {
                   isDarkMode
                     ? "bg-white/5 hover:bg-white/10 border-white/10"
                     : "bg-gray-100 hover:bg-gray-200 border-gray-200"
-                } hover:border-${colors[type]}-400/50`}
+                } ${hoverBorders[type]}`}
                 onClick={() => {
                   if (type === "whatsapp")
                     handleWhatsAppClick(contact.phoneNumber);
@@ -138,7 +138,7 @@ const ContactPage = () => {
                 }}
               >
                 <div className="flex items-center justify-between relative z-10">
-                  <div>
+                  <div className={isRTL ? "text-right" : "text-left"}>
                     <p
                       className={`font-semibold text-lg ${
                         isDarkMode ? "text-white" : "text-gray-900"
@@ -159,8 +159,8 @@ const ContactPage = () => {
                       type === "whatsapp"
                         ? "from-green-400/30 to-emerald-500/30"
                         : type === "call"
-                        ? "from-purple-400/30 to-violet-500/30"
-                        : "from-orange-400/30 to-red-500/30"
+                          ? "from-purple-400/30 to-violet-500/30"
+                          : "from-orange-400/30 to-red-500/30"
                     } p-3 rounded-full backdrop-blur-sm border ${
                       isDarkMode ? "border-white/20" : "border-gray-300"
                     }`}
@@ -173,8 +173,8 @@ const ContactPage = () => {
                     type === "whatsapp"
                       ? "from-green-400/0 to-emerald-500/5"
                       : type === "call"
-                      ? "from-purple-400/0 to-violet-500/5"
-                      : "from-orange-400/0 to-red-500/5"
+                        ? "from-purple-400/0 to-violet-500/5"
+                        : "from-orange-400/0 to-red-500/5"
                   } opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                 ></div>
               </div>
@@ -206,6 +206,13 @@ const ContactPage = () => {
       email: "from-orange-400 to-red-500",
     };
 
+    const cardGlowOpacity = isDarkMode
+      ? "group-hover:opacity-20"
+      : "group-hover:opacity-10";
+    const arrowMotion = isRTL
+      ? "mr-3 rotate-180 group-hover:-translate-x-1"
+      : "ml-3 group-hover:translate-x-1";
+
     return (
       <div
         className={`group relative overflow-hidden backdrop-blur-xl rounded-3xl p-8 border shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer h-full hover:scale-105 ${
@@ -218,14 +225,12 @@ const ContactPage = () => {
         <div
           className={`absolute inset-0 bg-gradient-to-br ${
             gradients[type]
-          } opacity-0 group-hover:opacity-${
-            isDarkMode ? "20" : "10"
-          } transition-opacity duration-500`}
+          } opacity-0 ${cardGlowOpacity} transition-opacity duration-500`}
         ></div>
 
         <div
           className={`absolute top-4 ${
-            direction === "rtl" ? "left-4" : "right-4"
+            isRTL ? "left-4" : "right-4"
           } opacity-20 group-hover:opacity-40 transition-opacity duration-300 ${
             isDarkMode ? "text-white" : "text-gray-600"
           }`}
@@ -235,20 +240,18 @@ const ContactPage = () => {
 
         <div className="relative z-10">
           <div
-            className={`flex items-start mb-6 ${
-              direction === "rtl" ? "flex-row-reverse" : ""
+            className={`flex items-start gap-6 mb-6 ${
+              isRTL ? "flex-row-reverse" : ""
             }`}
           >
             <div
               className={`bg-gradient-to-br ${
                 gradients[type]
-              } p-4 rounded-2xl ${
-                direction === "rtl" ? "ml-6" : "mr-6"
-              } shadow-lg`}
+              } p-4 rounded-2xl shadow-lg`}
             >
               {icons[type]}
             </div>
-            <div className={direction === "rtl" ? "text-right" : "text-left"}>
+            <div className={isRTL ? "text-right" : "text-left"}>
               <h3
                 className={`text-2xl font-bold mb-2 ${
                   isDarkMode ? "text-white" : "text-gray-900"
@@ -268,19 +271,15 @@ const ContactPage = () => {
 
           <div
             className={`flex items-center justify-between ${
-              direction === "rtl" ? "flex-row-reverse" : ""
+              isRTL ? "flex-row-reverse" : ""
             }`}
           >
             <div
-              className={`flex items-center text-transparent bg-gradient-to-r ${gradients[type]} bg-clip-text font-semibold text-lg`}
+              className={`flex  items-center text-transparent bg-gradient-to-r ${gradients[type]} bg-clip-text font-semibold text-lg`}
             >
               <span>{t("Get in touch")}</span>
               <MoveRight
-                className={`${
-                  direction === "rtl" ? "mr-3 rotate-180" : "ml-3"
-                } w-5 h-5 group-hover:translate-x-${
-                  direction === "rtl" ? "-1" : "1"
-                } transition-all duration-300 ${
+                className={`${arrowMotion} w-5 h-5 transition-all duration-300 ${
                   isDarkMode
                     ? "text-white/70 group-hover:text-white"
                     : "text-gray-600 group-hover:text-gray-900"
@@ -301,9 +300,7 @@ const ContactPage = () => {
         <div
           className={`absolute -inset-1 bg-gradient-to-r ${
             gradients[type]
-          } rounded-3xl opacity-0 group-hover:opacity-${
-            isDarkMode ? "20" : "10"
-          } blur-xl transition-opacity duration-500 -z-10`}
+          } rounded-3xl opacity-0 ${cardGlowOpacity} blur-xl transition-opacity duration-500 -z-10`}
         ></div>
       </div>
     );
@@ -313,7 +310,7 @@ const ContactPage = () => {
     <section
       id="contact"
       className="py-20 relative min-h-screen overflow-hidden"
-      dir={direction} // Set direction for the section
+      dir={dir}
     >
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {activeModal === "whatsapp" && <ContactModal type="whatsapp" />}
@@ -322,12 +319,12 @@ const ContactPage = () => {
 
         <div className="text-center mb-16">
           <div
-            className={`inline-flex items-center justify-center p-2 backdrop-blur-sm rounded-full mb-6 ${
+            className={`inline-flex items-center justify-center gap-2 p-2.5 backdrop-blur-sm rounded-full mb-6 ${
               isDarkMode ? "bg-white/10" : "bg-gray-200"
             }`}
           >
             <Sparkles
-              className={`w-6 h-6 ${direction === "rtl" ? "ml-2" : "mr-2"} ${
+              className={`w-6 h-6 ${
                 isDarkMode ? "text-yellow-400" : "text-yellow-500"
               }`}
             />

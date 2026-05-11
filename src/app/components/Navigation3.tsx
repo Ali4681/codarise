@@ -1,202 +1,391 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import ThemeToggle from "./ThemeToggle";
-import LanguageToggle from "./LanguageToggle";
+import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import LanguageToggle from "./LanguageToggle";
+import ThemeToggle from "./ThemeToggle";
+import { getAutoservice24Content } from "../data/autoservice24";
+import { useDirection } from "./useDirection";
 
 interface NavigationProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
 }
 
+const SECTION_IDS = [
+  "hero",
+  "about",
+  "services",
+  "team",
+  "projects",
+  "contact",
+] as const;
+
 const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
   const { t } = useTranslation();
+  const { dir, language } = useDirection();
+  const projectContent = getAutoservice24Content(language);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [navHeight, setNavHeight] = useState(0);
+  const navRef = useRef<HTMLElement>(null);
 
-  // Get navbar height once on mount
   useEffect(() => {
-    const nav = document.querySelector("nav");
-    if (nav) {
-      setNavHeight(nav.offsetHeight);
-    }
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  // Scroll listener for navbar background
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll spy to detect active section
   useEffect(() => {
     const handleScrollSpy = () => {
-      const sections = ["hero", "about", "services", "team", "contact"];
+      const navHeight = navRef.current?.offsetHeight ?? 0;
       const scrollPos = window.scrollY + navHeight + 10;
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && el.offsetTop <= scrollPos) {
-          setActiveSection(sections[i]);
+      for (let index = SECTION_IDS.length - 1; index >= 0; index--) {
+        const sectionId = SECTION_IDS[index];
+        const section = document.getElementById(sectionId);
+
+        if (section && section.offsetTop <= scrollPos) {
+          setActiveSection(sectionId);
           break;
         }
       }
     };
 
-    window.addEventListener("scroll", handleScrollSpy);
+    window.addEventListener("scroll", handleScrollSpy, { passive: true });
     return () => window.removeEventListener("scroll", handleScrollSpy);
-  }, [setActiveSection, navHeight]);
+  }, [setActiveSection]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const navItems = [
     { id: "hero", label: t("nav.home") },
     { id: "about", label: t("nav.about") },
     { id: "services", label: t("nav.services") },
     { id: "team", label: t("nav.team") },
+    { id: "projects", label: projectContent.navLabel },
     { id: "contact", label: t("nav.contact") },
-  ];
+  ] as const;
+  const mobileMenuExpanded: "true" | "false" = isOpen ? "true" : "false";
+  const mobileMenuLabel = isOpen ? t("nav.closeMenu") : t("nav.openMenu");
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const elementPosition =
-        element.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navHeight;
+    const navHeight = navRef.current?.offsetHeight ?? 0;
+    const section = document.getElementById(sectionId);
 
-      // For mobile, use a more aggressive scroll behavior
-      if (window.innerWidth < 768) {
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth",
-        });
-
-        // Additional fallback for mobile browsers that might not support smooth scrolling
-        setTimeout(() => {
-          window.scrollTo(0, offsetPosition);
-        }, 100);
-      } else {
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth",
-        });
-      }
-
-      setActiveSection(sectionId);
-      setIsOpen(false); // Close mobile menu after navigation
+    if (!section) {
+      return;
     }
+
+    const top =
+      section.getBoundingClientRect().top + window.scrollY - navHeight;
+    window.scrollTo({ top, behavior: "smooth" });
+    setActiveSection(sectionId);
+    setIsOpen(false);
   };
 
   return (
-    <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200/50 dark:border-purple-500/30 shadow-lg"
-          : "bg-transparent"
-      }`}
-      aria-label={t("nav.ariaLabel")}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-2">
-          {/* Logo Section */}
-          <div className="flex items-center">
-            <div
-              className="relative group cursor-pointer flex items-center gap-2"
-              onClick={() => scrollToSection("hero")}
-            >
-              <div className="relative w-12 h-12 overflow-hidden rounded-lg p-0.5 shadow-lg hover:shadow-purple-500/30 transition-all duration-300">
-                <div className="w-full h-full rounded-lg flex items-center justify-center">
-                  <Image
-                    src="/logo 2.PNG"
-                    alt={t("nav.logoAlt")}
-                    width={40}
-                    height={40}
-                    className="object-contain w-10 h-10 group-hover:scale-110 transition-transform duration-300"
-                    priority
-                  />
-                </div>
-              </div>
+    <>
+      <style jsx global>{`
+        .nav-logo-row {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
 
-              <div className="text-xl font-bold tracking-wide">
-                <span className="text-slate-800 dark:text-white">CODAR</span>
-                <span className="text-blue-600 dark:text-cyan-400">ISE</span>
-              </div>
-            </div>
+        .nav-link-underline {
+          position: absolute;
+          bottom: -2px;
+          inset-inline-start: 0;
+          width: 0;
+          height: 2px;
+          background: linear-gradient(to right, #3b82f6, #a855f7);
+          transition: width 0.3s ease;
+          border-radius: 999px;
+        }
+
+        [dir="rtl"] .nav-link-underline {
+          background: linear-gradient(to left, #3b82f6, #a855f7);
+        }
+
+        .nav-link:hover .nav-link-underline,
+        .nav-link[aria-current="page"] .nav-link-underline {
+          width: 100%;
+        }
+
+        .mobile-drawer {
+          position: fixed;
+          top: 0;
+          inset-block: 0;
+          inset-inline-end: -100%;
+          width: min(320px, 85vw);
+          z-index: 49;
+          overflow-y: auto;
+          transition: inset-inline-end 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-drawer.open {
+          inset-inline-end: 0;
+        }
+
+        .mobile-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 48;
+          background: rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(2px);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.35s ease;
+        }
+
+        .mobile-overlay.open {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .mobile-nav-item-bar {
+          position: absolute;
+          inset-block: 0;
+          inset-inline-start: 0;
+          width: 3px;
+          border-radius: 999px;
+          background: linear-gradient(to bottom, #3b82f6, #a855f7);
+          transform: scaleY(0);
+          transition: transform 0.2s ease;
+        }
+
+        .mobile-nav-item.active .mobile-nav-item-bar {
+          transform: scaleY(1);
+        }
+
+        .brand-text {
+          unicode-bidi: isolate;
+          direction: ltr;
+        }
+
+        [dir="rtl"] .hamburger-icon {
+          transform: scaleX(-1);
+        }
+
+        @property --scroll-pct {
+          syntax: "<percentage>";
+          inherits: false;
+          initial-value: 0%;
+        }
+
+        .scroll-progress {
+          position: fixed;
+          top: 0;
+          inset-inline-start: 0;
+          z-index: 51;
+          height: 2px;
+          width: var(--sw, 0%);
+          background: linear-gradient(to right, #3b82f6, #a855f7, #06b6d4);
+          transition: width 0.1s linear;
+        }
+
+        [dir="rtl"] .scroll-progress {
+          background: linear-gradient(to left, #3b82f6, #a855f7, #06b6d4);
+        }
+      `}</style>
+
+      <ScrollProgress />
+
+      <div
+        className={`mobile-overlay ${isOpen ? "open" : ""}`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+      />
+
+      <div
+        id="nav-mobile-drawer"
+        className={`mobile-drawer bg-white dark:bg-slate-900 border-s border-slate-200/60 dark:border-purple-500/30 shadow-2xl ${
+          isOpen ? "open" : ""
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("nav.mobileMenu")}
+        dir={dir}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-slate-200/60 dark:border-purple-500/30">
+          <div className="nav-logo-row">
+            <Image
+              src="/logo 2.PNG"
+              alt={t("nav.logoAlt")}
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <span className="brand-text text-lg font-bold">
+              <span className="text-slate-800 dark:text-white">CODAR</span>
+              <span className="text-blue-600 dark:text-cyan-400">ISE</span>
+            </span>
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navItems.map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => scrollToSection(id)}
-                className={`relative group text-slate-700 dark:text-white font-medium text-lg transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900 rounded-md px-2 py-1
-                  ${
-                    activeSection === id
-                      ? "text-purple-600 dark:text-purple-400"
-                      : "hover:text-purple-600 dark:hover:text-purple-400"
-                  }`}
-                aria-current={activeSection === id ? "page" : undefined}
-              >
-                {label}
-                <span
-                  className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-400 dark:to-purple-400 transition-all duration-300 ${
-                    activeSection === id ? "w-full" : "group-hover:w-full"
-                  }`}
-                />
-              </button>
-            ))}
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
-
-          {/* Mobile Menu Toggle */}
           <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-slate-700 dark:text-white p-2 rounded-md hover:bg-slate-200/50 dark:hover:bg-purple-600/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
-            aria-expanded={isOpen}
-            aria-label={isOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
+            aria-label={t("nav.closeMenu")}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            <X size={20} />
           </button>
         </div>
 
-        {/* Mobile Menu - Scrollable dropdown */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-          }`}
+        <nav
+          className="p-3 flex flex-col gap-1"
+          aria-label={t("nav.ariaLabel")}
         >
-          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg rounded-lg mt-2 shadow-lg border border-slate-200/50 dark:border-purple-500/30 max-h-[calc(100vh-100px)] overflow-y-auto">
-            <div className="p-4">
+          {navItems.map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => scrollToSection(id)}
+              className={`mobile-nav-item relative flex items-center text-start w-full px-4 py-3 rounded-xl font-semibold text-base transition-all duration-200 ${
+                activeSection === id
+                  ? "active bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+                  : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-purple-600 dark:hover:text-purple-300"
+              }`}
+              aria-current={activeSection === id ? "page" : undefined}
+            >
+              <span className="mobile-nav-item-bar" aria-hidden="true" />
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="mt-auto p-4 border-t border-slate-200/60 dark:border-purple-500/30 flex items-center justify-center gap-4">
+          <LanguageToggle />
+          <ThemeToggle />
+        </div>
+      </div>
+
+      <nav
+        ref={navRef}
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200/50 dark:border-purple-500/30 shadow-lg"
+            : "bg-transparent"
+        }`}
+        aria-label={t("nav.ariaLabel")}
+        dir={dir}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-2">
+            <button
+              type="button"
+              className="nav-logo-row group cursor-pointer"
+              onClick={() => scrollToSection("hero")}
+              aria-label={t("nav.home")}
+            >
+              <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-md group-hover:shadow-purple-500/30 transition-shadow duration-300">
+                <Image
+                  src="/logo 2.PNG"
+                  alt={t("nav.logoAlt")}
+                  width={48}
+                  height={48}
+                  className="object-contain w-full h-full group-hover:scale-110 transition-transform duration-300"
+                  priority
+                />
+              </div>
+              <span className="brand-text text-xl font-bold tracking-wide">
+                <span className="text-slate-800 dark:text-white">CODAR</span>
+                <span className="text-blue-600 dark:text-cyan-400">ISE</span>
+              </span>
+            </button>
+
+            <div className="hidden md:flex items-center gap-1">
               {navItems.map(({ id, label }) => (
                 <button
                   key={id}
+                  type="button"
                   onClick={() => scrollToSection(id)}
-                  className={`block w-full text-left py-3 px-4 text-lg font-semibold rounded-md transition-all duration-300 mb-2 last:mb-0 ${
+                  className={`nav-link relative px-3 py-2 rounded-md font-medium text-base transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900 ${
                     activeSection === id
-                      ? "bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-400 shadow-lg"
-                      : "text-slate-700 dark:text-white hover:bg-purple-50 dark:hover:bg-purple-600/30 hover:text-purple-600 dark:hover:text-purple-300"
+                      ? "text-purple-600 dark:text-purple-400"
+                      : "text-slate-700 dark:text-white hover:text-purple-600 dark:hover:text-purple-400"
                   }`}
+                  aria-current={activeSection === id ? "page" : undefined}
                 >
                   {label}
+                  <span className="nav-link-underline" aria-hidden="true" />
                 </button>
               ))}
 
-              {/* Mobile Theme and Language Toggles */}
-              <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-200/50 dark:border-purple-500/30">
+              <div className="ms-3 flex items-center gap-2 border-s border-slate-200/60 dark:border-purple-500/30 ps-3">
                 <LanguageToggle />
                 <ThemeToggle />
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen((open) => !open)}
+              className="md:hidden p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-purple-600/30 transition-colors text-slate-700 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+              aria-expanded={mobileMenuExpanded}
+              aria-controls="nav-mobile-drawer"
+              aria-haspopup="dialog"
+              aria-label={mobileMenuLabel}
+              title={mobileMenuLabel}
+            >
+              <span className="hamburger-icon">
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </span>
+            </button>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };
+
+function ScrollProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const update = () => {
+      const element = document.documentElement;
+      const pct =
+        (element.scrollTop / (element.scrollHeight - element.clientHeight)) *
+          100 || 0;
+      ref.current?.style.setProperty("--sw", `${pct.toFixed(1)}%`);
+    };
+
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="scroll-progress"
+      role="progressbar"
+      aria-hidden="true"
+    />
+  );
+}
 
 export default Navigation;

@@ -2,6 +2,7 @@ import { Code, Cog, Palette, Smartphone } from "lucide-react";
 import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection";
 
 const containerVariants = {
   hidden: {},
@@ -18,8 +19,8 @@ const cardVariants = {
 };
 
 const ServicesSection = () => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation();
+  const { dir, isRTL } = useDirection();
 
   const services = [
     {
@@ -53,7 +54,7 @@ const ServicesSection = () => {
       id="services"
       className="py-20 relative"
       aria-labelledby="servicess-title"
-      dir={isRTL ? "rtl" : "ltr"} // for native RTL support
+      dir={dir}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">

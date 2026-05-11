@@ -105,7 +105,7 @@ const ServicesSection = () => {
         color: ["cyan", "purple", "pink", "emerald", "yellow"][
           Math.floor(Math.random() * 5)
         ],
-      })
+      }),
     );
     setMagicParticles(particles);
 
@@ -121,7 +121,7 @@ const ServicesSection = () => {
         color: ["cyan", "purple", "emerald", "pink"][
           Math.floor(Math.random() * 4)
         ],
-      })
+      }),
     );
     setFloatingOrbs(orbs);
 
@@ -144,12 +144,12 @@ const ServicesSection = () => {
         const scrollStart = Math.max(0, windowCenter - timelineTop);
         const scrollEnd = Math.min(
           timelineHeight,
-          windowHeight + windowCenter - timelineTop
+          windowHeight + windowCenter - timelineTop,
         );
         const scrollRange = scrollEnd - scrollStart;
         const currentScroll = Math.max(
           0,
-          Math.min(scrollRange, windowCenter - timelineTop)
+          Math.min(scrollRange, windowCenter - timelineTop),
         );
         const progress = scrollRange > 0 ? currentScroll / scrollRange : 0;
 
@@ -157,7 +157,7 @@ const ServicesSection = () => {
         const stepIndex = Math.floor(progress * timelineSteps.length);
         const clampedStepIndex = Math.max(
           0,
-          Math.min(timelineSteps.length - 1, stepIndex)
+          Math.min(timelineSteps.length - 1, stepIndex),
         );
         setActiveTimelineStep(clampedStepIndex);
       }
@@ -671,8 +671,8 @@ const ServicesSection = () => {
                     isMobile && hoveredService === index
                       ? "scale-[1.02]"
                       : !isMobile
-                      ? "group-hover:scale-105"
-                      : ""
+                        ? "group-hover:scale-105"
+                        : ""
                   } h-full`}
                 >
                   {/* Service Icon - Smaller on mobile */}
@@ -689,7 +689,11 @@ const ServicesSection = () => {
                     </div>
 
                     {/* Magic Level Indicator - Smaller on mobile */}
-                    <div className="flex items-center space-x-1">
+                    <div
+                      className={`flex items-center gap-1 ${
+                        isRTL ? "flex-row-reverse" : ""
+                      }`}
+                    >
                       <span
                         className={`text-xs ${
                           isDarkMode ? "text-slate-400" : "text-slate-600"
@@ -739,7 +743,12 @@ const ServicesSection = () => {
                   {/* Features - Smaller text on mobile */}
                   <div className="space-y-1 md:space-y-2">
                     {service.features.map((feature, fIndex) => (
-                      <div key={fIndex} className="flex items-center space-x-2">
+                      <div
+                        key={fIndex}
+                        className={`flex items-center gap-2 ${
+                          isRTL ? "flex-row-reverse text-right" : ""
+                        }`}
+                      >
                         <Diamond
                           className={`w-2 h-2 sm:w-3 sm:h-3 ${colors.primary} opacity-60`}
                         />
@@ -831,8 +840,8 @@ const ServicesSection = () => {
                 const isLeft = isMobile
                   ? true
                   : isRTL
-                  ? index % 2 !== 0
-                  : index % 2 === 0;
+                    ? index % 2 !== 0
+                    : index % 2 === 0;
                 const colors = getColorClasses(step.color);
                 const isActive = activeTimelineStep === index;
                 const isPassed = activeTimelineStep > index;
@@ -853,13 +862,13 @@ const ServicesSection = () => {
                           ? isRTL && !isMobile
                             ? "pl-8 text-left"
                             : !isMobile
-                            ? "pr-8 text-right"
-                            : "text-left"
+                              ? "pr-8 text-right"
+                              : "text-left"
                           : isRTL && !isMobile
-                          ? "pr-8 text-right"
-                          : !isMobile
-                          ? "pl-8 text-left"
-                          : "text-left"
+                            ? "pr-8 text-right"
+                            : !isMobile
+                              ? "pl-8 text-left"
+                              : "text-left"
                       } ${isMobile ? "mb-4" : ""}`}
                     >
                       <div className="relative cursor-pointer">
@@ -871,8 +880,8 @@ const ServicesSection = () => {
                               isActive
                                 ? "opacity-100"
                                 : isPassed
-                                ? "opacity-30"
-                                : "opacity-0 group-hover:opacity-50"
+                                  ? "opacity-30"
+                                  : "opacity-0 group-hover:opacity-50"
                             }`}
                           />
                         )}
@@ -887,18 +896,18 @@ const ServicesSection = () => {
                                   isMobile ? "scale-100" : "scale-105"
                                 } ${colors.shadow} shadow-lg`
                               : isPassed
-                              ? `${colors.border} opacity-80 ${
-                                  isMobile ? "scale-100" : "scale-95"
-                                }`
-                              : isUpcoming
-                              ? `${colors.border} opacity-50 ${
-                                  isMobile ? "scale-100" : "scale-90"
-                                }`
-                              : `${colors.border} hover:${colors.borderHover} ${
-                                  isMobile
-                                    ? "hover:scale-100"
-                                    : "hover:scale-102"
-                                }`
+                                ? `${colors.border} opacity-80 ${
+                                    isMobile ? "scale-100" : "scale-95"
+                                  }`
+                                : isUpcoming
+                                  ? `${colors.border} opacity-50 ${
+                                      isMobile ? "scale-100" : "scale-90"
+                                    }`
+                                  : `${colors.border} hover:${colors.borderHover} ${
+                                      isMobile
+                                        ? "hover:scale-100"
+                                        : "hover:scale-102"
+                                    }`
                           }`}
                         >
                           <h3
@@ -906,10 +915,10 @@ const ServicesSection = () => {
                               isActive
                                 ? `${colors.primary} text-shadow-lg`
                                 : isPassed
-                                ? `${colors.secondary} opacity-70`
-                                : isUpcoming
-                                ? `${colors.primary} opacity-40`
-                                : `${colors.primary}`
+                                  ? `${colors.secondary} opacity-70`
+                                  : isUpcoming
+                                    ? `${colors.primary} opacity-40`
+                                    : `${colors.primary}`
                             }`}
                           >
                             {step.title}
@@ -921,16 +930,16 @@ const ServicesSection = () => {
                                   ? "text-slate-200"
                                   : "text-slate-700"
                                 : isPassed
-                                ? isDarkMode
-                                  ? "text-slate-300 opacity-70"
-                                  : "text-slate-600 opacity-70"
-                                : isUpcoming
-                                ? isDarkMode
-                                  ? "text-slate-400 opacity-40"
-                                  : "text-slate-500 opacity-40"
-                                : isDarkMode
-                                ? "text-slate-300"
-                                : "text-slate-600"
+                                  ? isDarkMode
+                                    ? "text-slate-300 opacity-70"
+                                    : "text-slate-600 opacity-70"
+                                  : isUpcoming
+                                    ? isDarkMode
+                                      ? "text-slate-400 opacity-40"
+                                      : "text-slate-500 opacity-40"
+                                    : isDarkMode
+                                      ? "text-slate-300"
+                                      : "text-slate-600"
                             }`}
                           >
                             {step.desc}
@@ -943,12 +952,12 @@ const ServicesSection = () => {
                                 isMobile
                                   ? "-bottom-2 left-1/2 transform -translate-x-1/2"
                                   : isLeft
-                                  ? isRTL
-                                    ? "-left-2 -top-2"
-                                    : "-right-2 -top-2"
-                                  : isRTL
-                                  ? "-right-2 -top-2"
-                                  : "-left-2 -top-2"
+                                    ? isRTL
+                                      ? "-left-2 -top-2"
+                                      : "-right-2 -top-2"
+                                    : isRTL
+                                      ? "-right-2 -top-2"
+                                      : "-left-2 -top-2"
                               } w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full`}
                             >
                               <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
@@ -962,12 +971,12 @@ const ServicesSection = () => {
                                 isMobile
                                   ? "-bottom-2 left-1/2 transform -translate-x-1/2"
                                   : isLeft
-                                  ? isRTL
-                                    ? "-left-2 -top-2"
-                                    : "-right-2 -top-2"
-                                  : isRTL
-                                  ? "-right-2 -top-2"
-                                  : "-left-2 -top-2"
+                                    ? isRTL
+                                      ? "-left-2 -top-2"
+                                      : "-right-2 -top-2"
+                                    : isRTL
+                                      ? "-right-2 -top-2"
+                                      : "-left-2 -top-2"
                               } w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-pulse`}
                             />
                           )}
@@ -992,20 +1001,22 @@ const ServicesSection = () => {
                                 isMobile ? "scale-110" : "scale-125"
                               } ${colors.shadow} shadow-lg`
                             : isPassed
-                            ? `${colors.bg} ${colors.border} ${
-                                isMobile ? "scale-105" : "scale-110"
-                              } opacity-80`
-                            : isUpcoming
-                            ? `${
-                                isDarkMode
-                                  ? "bg-slate-800 border-slate-600"
-                                  : "bg-slate-100 border-slate-300"
-                              } ${
-                                isMobile ? "scale-95" : "scale-90"
-                              } opacity-50`
-                            : `${colors.bg} ${colors.border} ${
-                                isMobile ? "hover:scale-105" : "hover:scale-110"
-                              }`
+                              ? `${colors.bg} ${colors.border} ${
+                                  isMobile ? "scale-105" : "scale-110"
+                                } opacity-80`
+                              : isUpcoming
+                                ? `${
+                                    isDarkMode
+                                      ? "bg-slate-800 border-slate-600"
+                                      : "bg-slate-100 border-slate-300"
+                                  } ${
+                                    isMobile ? "scale-95" : "scale-90"
+                                  } opacity-50`
+                                : `${colors.bg} ${colors.border} ${
+                                    isMobile
+                                      ? "hover:scale-105"
+                                      : "hover:scale-110"
+                                  }`
                         }`}
                         onClick={() => setActiveTimelineStep(index)}
                       >
@@ -1016,10 +1027,10 @@ const ServicesSection = () => {
                             isActive
                               ? `${colors.primary} drop-shadow-lg`
                               : isPassed
-                              ? `${colors.secondary} opacity-80`
-                              : isUpcoming
-                              ? `text-slate-500 opacity-50`
-                              : `${colors.primary}`
+                                ? `${colors.secondary} opacity-80`
+                                : isUpcoming
+                                  ? `text-slate-500 opacity-50`
+                                  : `${colors.primary}`
                           }`}
                         />
                         <div
@@ -1027,10 +1038,10 @@ const ServicesSection = () => {
                             isActive
                               ? `${colors.bg} opacity-100`
                               : isPassed
-                              ? `${colors.bg} opacity-40`
-                              : isUpcoming
-                              ? `bg-slate-700 opacity-20`
-                              : `${colors.bg} opacity-50`
+                                ? `${colors.bg} opacity-40`
+                                : isUpcoming
+                                  ? `bg-slate-700 opacity-20`
+                                  : `${colors.bg} opacity-50`
                           }`}
                         />
 
@@ -1041,7 +1052,7 @@ const ServicesSection = () => {
                               ...Array(
                                 isMobile
                                   ? Math.floor(step.particles / 2)
-                                  : step.particles
+                                  : step.particles,
                               ),
                             ].map((_, i) => (
                               <div
@@ -1072,11 +1083,16 @@ const ServicesSection = () => {
           </div>
 
           {/* Timeline Controls - Always visible */}
-          <div className="flex justify-center mt-8 md:mt-12 space-x-2 md:space-x-4">
+          <div className="flex justify-center mt-8 md:mt-12 gap-2 md:gap-4">
             {timelineSteps.map((_, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={() => setActiveTimelineStep(index)}
+                aria-label={timelineSteps[index].title}
+                title={timelineSteps[index].title}
+                aria-pressed={activeTimelineStep === index}
+                aria-current={activeTimelineStep === index ? "step" : undefined}
                 className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                   activeTimelineStep === index
                     ? "bg-gradient-to-r from-cyan-400 to-purple-400 scale-125"

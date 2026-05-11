@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection";
 
 interface FooterProps {
   theme?: "light" | "dark";
@@ -8,244 +9,302 @@ interface FooterProps {
 
 const Footer = ({ theme: themeOverride }: FooterProps) => {
   const { isDarkMode } = useTheme();
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation();
+  const { dir } = useDirection();
 
-  // Use override if provided, otherwise use theme context
   const theme = themeOverride || (isDarkMode ? "dark" : "light");
 
-  // Theme styles
-  const themeStyles = {
-    light: {
-      background: "bg-gradient-to-t from-gray-50/90 to-white",
-      border: "border-purple-500/30",
-      text: {
-        primary: "text-gray-800",
-        secondary: "text-gray-600",
-        company: "text-gray-900",
-        tagline: "text-purple-600",
-        copyright: "text-gray-500",
-      },
-      logoBg: "bg-gray-100",
-      glow: "from-cyan-400/20 via-purple-500/20 to-cyan-400/20",
-    },
-    dark: {
-      background: "bg-gradient-to-t from-slate-900/90 to-slate-950/40",
-      border: "border-purple-500/20",
-      text: {
-        primary: "text-white",
-        secondary: "text-gray-400",
-        company: "text-white",
-        tagline: "text-purple-400",
-        copyright: "text-gray-400",
-      },
-      logoBg: "bg-slate-800/50",
-      glow: "from-cyan-400/10 via-purple-500/30 to-cyan-400/10",
-    },
-  };
-
-  const currentTheme = themeStyles[theme];
-
-  // RTL-aware classes
-  const rtlClasses = {
-    container: isRTL ? "md:flex-row-reverse" : "md:flex-row",
-    logoContainer: isRTL ? "flex-row-reverse" : "flex-row",
-    textContainer: isRTL ? "md:text-left" : "md:text-right",
-    logoSpacing: isRTL ? "gap-3" : "gap-3",
-    gradientDirection: isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r",
-    animationDirection: isRTL ? "animate-gradient-x-rtl" : "animate-gradient-x",
-  };
+  const isDark = theme === "dark";
 
   return (
-    <footer
-      className={`relative py-10 border-t ${currentTheme.border} ${currentTheme.background} shadow-inner backdrop-blur-md z-10`}
-      dir={isRTL ? "rtl" : "ltr"}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          className={`flex flex-col ${rtlClasses.container} justify-between items-center gap-6 md:gap-0`}
-        >
-          {/* Logo + Name */}
-          <div className={`flex items-center ${rtlClasses.logoSpacing} group`}>
-            <div
-              className={`relative w-12 h-12 p-0.5 rounded-xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-105 ${
-                theme === "dark"
-                  ? "group-hover:shadow-purple-500/40"
-                  : "group-hover:shadow-purple-500/20"
-              }`}
-            >
-              <div
-                className={`w-full h-full ${currentTheme.logoBg} rounded-xl flex items-center justify-center`}
-              >
+    <>
+      {/* ─── Styles ──────────────────────────────────────────────── */}
+      <style jsx>{`
+        /*
+         * All directional properties use CSS logical properties so that
+         * the browser auto-flips them based on the [dir] attribute.
+         * Zero manual RTL class-switching required.
+         */
+
+        .footer-root {
+          position: relative;
+          padding-block: 2.5rem;
+          border-block-start: 1px solid
+            ${isDark ? "rgba(168,85,247,.2)" : "rgba(168,85,247,.3)"};
+          background: ${isDark
+            ? "linear-gradient(to top, rgba(15,23,42,.9), rgba(2,6,23,.4))"
+            : "linear-gradient(to top, rgba(249,250,251,.9), #ffffff)"};
+          backdrop-filter: blur(12px);
+          z-index: 10;
+        }
+
+        .footer-inner {
+          max-width: 80rem;
+          margin-inline: auto;
+          padding-inline: clamp(1rem, 4vw, 2rem);
+        }
+
+        /* ── Row: logo + tagline ───────────────────────────────── */
+        .footer-row {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1.5rem;
+        }
+
+        /* Logo block: always reads inline-start → inline-end */
+        .logo-block {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          cursor: default;
+        }
+
+        .logo-img-wrap {
+          flex-shrink: 0;
+          width: 3rem;
+          height: 3rem;
+          padding: 2px;
+          border-radius: 0.75rem;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          background: ${isDark ? "rgba(30,41,59,.5)" : "rgba(243,244,246,1)"};
+          transition:
+            box-shadow 0.3s ease,
+            transform 0.3s ease;
+        }
+
+        .logo-block:hover .logo-img-wrap {
+          transform: scale(1.05);
+          box-shadow: 0 6px 20px
+            ${isDark ? "rgba(168,85,247,.4)" : "rgba(168,85,247,.2)"};
+        }
+
+        /* Brand text always LTR */
+        .brand-text {
+          font-size: 1.25rem;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          unicode-bidi: isolate;
+          direction: ltr;
+        }
+
+        /* ── Text block: copyright + tagline ──────────────────── */
+        .text-block {
+          text-align: center;
+        }
+
+        /*
+         * On wide screens we want the text aligned to the inline-end.
+         * logical property: text-align: end  → right in LTR, left in RTL.
+         */
+        @media (min-width: 768px) {
+          .text-block {
+            text-align: end;
+          }
+        }
+
+        .copyright-text {
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          font-weight: 500;
+          color: ${isDark ? "rgba(156,163,175,1)" : "rgba(107,114,128,1)"};
+        }
+
+        /*
+         * In RTL, uppercase Latin tracking looks odd alongside Arabic text.
+         * Reduce it automatically.
+         */
+        [dir="rtl"] .copyright-text {
+          letter-spacing: 0.04em;
+          text-transform: none;
+        }
+
+        .tagline-text {
+          margin-block-start: 0.25rem;
+          font-size: 0.75rem;
+          font-style: italic;
+          letter-spacing: 0.05em;
+          animation: pulse 3s ease-in-out infinite;
+          color: ${isDark ? "rgba(192,132,252,1)" : "rgba(147,51,234,1)"};
+        }
+
+        /* RTL: remove italic + adjust tracking for Arabic */
+        [dir="rtl"] .tagline-text {
+          font-style: normal;
+          letter-spacing: 0.02em;
+        }
+
+        /* ── Gradient direction: driven by dir attribute, no JS needed ── */
+        .divider-line,
+        .bottom-glow {
+          background: linear-gradient(
+            to right,
+            ${isDark
+              ? "rgba(34,211,238,.1), rgba(168,85,247,.3), rgba(34,211,238,.1)"
+              : "rgba(34,211,238,.2), rgba(168,85,247,.2), rgba(34,211,238,.2)"}
+          );
+        }
+
+        [dir="rtl"] .divider-line,
+        [dir="rtl"] .bottom-glow {
+          background: linear-gradient(
+            to left,
+            ${isDark
+              ? "rgba(34,211,238,.1), rgba(168,85,247,.3), rgba(34,211,238,.1)"
+              : "rgba(34,211,238,.2), rgba(168,85,247,.2), rgba(34,211,238,.2)"}
+          );
+        }
+
+        /* ── Brand text color classes ─────────────────────────────── */
+        .brand-company {
+          color: ${isDark ? "#ffffff" : "#111827"};
+          margin-inline-end: 2px;
+        }
+
+        .brand-accent {
+          color: #22d3ee;
+        }
+
+        /* ── Dot animation delays via CSS custom property ─────────── */
+        .dot-delay-0 {
+          animation-delay: 0s;
+        }
+        .dot-delay-1 {
+          animation-delay: 0.5s;
+        }
+        .dot-delay-2 {
+          animation-delay: 1s;
+        }
+
+        /* ── Divider wrap + line ──────────────────────────────── */
+        .divider-wrap {
+          position: relative;
+          margin-block-start: 2rem;
+        }
+
+        .divider-line {
+          position: absolute;
+          inset-block-start: 0;
+          inset-inline: 0;
+          height: 1px;
+          opacity: 0.6;
+        }
+
+        /* ── Decorative dots ──────────────────────────────────── */
+        .dots-row {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5rem;
+          margin-block-start: 1rem;
+          /*
+           * No flex-direction reversal needed — dots are symmetric,
+           * and the staggered pulse handles the visual rhythm.
+           */
+        }
+
+        .dot {
+          width: 0.25rem;
+          height: 0.25rem;
+          border-radius: 9999px;
+          animation: pulse 2s ease-in-out infinite;
+        }
+
+        .dot-purple {
+          background: ${isDark
+            ? "rgba(192,132,252,.6)"
+            : "rgba(147,51,234,.6)"};
+        }
+
+        .dot-cyan {
+          background: ${isDark ? "rgba(34,211,238,.6)" : "rgba(6,182,212,.6)"};
+        }
+
+        /* ── Bottom glow strip ────────────────────────────────── */
+        .bottom-glow {
+          position: absolute;
+          inset-block-end: 0;
+          inset-inline: 0;
+          height: 2px;
+          background-size: 200% 100%;
+          filter: blur(2px);
+          animation: glow-slide 5s ease infinite alternate;
+        }
+
+        /* ── Keyframes ────────────────────────────────────────── */
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.4;
+          }
+        }
+
+        /*
+         * The glow strip animates background-position.
+         * Because we use a CSS variable for gradient direction,
+         * the animation looks correct in both LTR and RTL without
+         * separate keyframes.
+         */
+        @keyframes glow-slide {
+          from {
+            background-position: 0% center;
+          }
+          to {
+            background-position: 100% center;
+          }
+        }
+      `}</style>
+
+      {/* ─── Footer markup ──────────────────────────────────────────── */}
+      <footer className="footer-root" dir={dir}>
+        <div className="footer-inner">
+          <div className="footer-row">
+            {/* Logo + brand */}
+            <div className="logo-block">
+              <div className="logo-img-wrap">
                 <Image
                   src="/logo 2.PNG"
                   alt={t("footer.logoAlt")}
                   width={40}
                   height={40}
-                  className="object-contain w-10 h-10 transition-transform duration-300 group-hover:scale-110"
+                  className="object-contain w-10 h-10"
                   priority
                 />
               </div>
-            </div>
-            <div
-              className={`text-2xl font-extrabold tracking-wider ${
-                isRTL ? "font-arabic" : ""
-              }`}
-            >
-              <span
-                className={`${currentTheme.text.company} ${
-                  isRTL ? "ml-1" : "mr-1"
-                }`}
-              >
-                CODAR
+              <span className="brand-text">
+                <span className="brand-company">CODAR</span>
+                <span className="brand-accent">ISE</span>
               </span>
-              <span className="text-cyan-400">ISE</span>
+            </div>
+
+            {/* Copyright + tagline */}
+            <div className="text-block">
+              <p className="copyright-text">{t("footer.copyright")}</p>
+              <p className="tagline-text">{t("footer.tagline")}</p>
             </div>
           </div>
 
-          {/* Text Content */}
-          <div className={`text-center ${rtlClasses.textContainer}`}>
-            <p
-              className={`${
-                currentTheme.text.copyright
-              } text-sm uppercase tracking-widest font-medium ${
-                isRTL ? "font-arabic tracking-normal" : ""
-              }`}
-            >
-              {t("footer.copyright")}
-            </p>
-            <p
-              className={`${
-                currentTheme.text.tagline
-              } italic text-xs mt-1 tracking-wide animate-pulse ${
-                isRTL ? "font-arabic tracking-normal not-italic" : ""
-              }`}
-            >
-              {t("footer.tagline")}
-            </p>
+          {/* Divider + dots */}
+          <div className="divider-wrap">
+            <div className="divider-line" />
+            <div className="dots-row">
+              <span className="dot dot-purple dot-delay-0" />
+              <span className="dot dot-cyan dot-delay-1" />
+              <span className="dot dot-purple dot-delay-2" />
+            </div>
           </div>
         </div>
 
-        {/* Additional RTL-aware decorative elements */}
-        <div className="relative mt-8">
-          <div
-            className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${currentTheme.glow} opacity-50`}
-          />
-
-          {/* RTL-aware decorative dots */}
-          <div
-            className={`flex justify-center items-center gap-2 mt-4 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
-          >
-            <div
-              className={`w-1 h-1 rounded-full ${
-                theme === "dark" ? "bg-purple-400/60" : "bg-purple-500/60"
-              } animate-pulse`}
-              style={{ animationDelay: "0s" }}
-            />
-            <div
-              className={`w-1 h-1 rounded-full ${
-                theme === "dark" ? "bg-cyan-400/60" : "bg-cyan-500/60"
-              } animate-pulse`}
-              style={{ animationDelay: "0.5s" }}
-            />
-            <div
-              className={`w-1 h-1 rounded-full ${
-                theme === "dark" ? "bg-purple-400/60" : "bg-purple-500/60"
-              } animate-pulse`}
-              style={{ animationDelay: "1s" }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Subtle Glow Line with RTL support */}
-      <div
-        className={`absolute inset-x-0 bottom-0 h-0.5 ${rtlClasses.gradientDirection} ${currentTheme.glow} blur-sm ${rtlClasses.animationDirection}`}
-      />
-
-      {/* Enhanced Animation Keyframes with RTL support */}
-      <style jsx>{`
-        @keyframes gradient-x {
-          0%,
-          100% {
-            background-position: 0% center;
-          }
-          50% {
-            background-position: 100% center;
-          }
-        }
-
-        @keyframes gradient-x-rtl {
-          0%,
-          100% {
-            background-position: 100% center;
-          }
-          50% {
-            background-position: 0% center;
-          }
-        }
-
-        .animate-gradient-x {
-          background-size: 200% 100%;
-          animation: gradient-x 5s ease infinite;
-        }
-
-        .animate-gradient-x-rtl {
-          background-size: 200% 100%;
-          animation: gradient-x-rtl 5s ease infinite;
-        }
-
-        /* Arabic font support */
-        .font-arabic {
-          font-family: "Amiri", "Noto Sans Arabic", "Arabic UI Text", sans-serif;
-        }
-
-        /* RTL-specific adjustments */
-        [dir="rtl"] .group:hover .group-hover\\:scale-105 {
-          transform: scale(1.05);
-        }
-
-        [dir="rtl"] .transition-transform {
-          transform-origin: center;
-        }
-
-        /* Enhanced RTL typography */
-        [dir="rtl"] .tracking-widest {
-          letter-spacing: 0.1em;
-        }
-
-        [dir="rtl"] .tracking-wide {
-          letter-spacing: 0.05em;
-        }
-
-        /* RTL-aware animations */
-        [dir="rtl"] .animate-pulse {
-          animation-direction: reverse;
-        }
-
-        /* Responsive RTL adjustments */
-        @media (max-width: 768px) {
-          [dir="rtl"] .text-center {
-            text-align: center;
-          }
-
-          [dir="rtl"] .flex-col {
-            align-items: center;
-          }
-        }
-
-        /* Enhanced hover effects for RTL */
-        [dir="rtl"] .group:hover {
-          transform: translateX(-2px);
-        }
-
-        [dir="ltr"] .group:hover {
-          transform: translateX(2px);
-        }
-      `}</style>
-    </footer>
+        {/* Bottom glow strip */}
+        <div className="bottom-glow" aria-hidden="true" />
+      </footer>
+    </>
   );
 };
 

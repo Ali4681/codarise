@@ -9,8 +9,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <I18nProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </I18nProvider>

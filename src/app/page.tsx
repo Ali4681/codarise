@@ -1,5 +1,8 @@
 "use client";
+
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+
 const Navigation = dynamic(() => import("./components/Navigation3"), {
   ssr: false,
 });
@@ -15,7 +18,9 @@ const ServicesSection = dynamic(() => import("./components/ServicesSection6"), {
 const TeamSection = dynamic(() => import("./components/TeamSection"), {
   ssr: false,
 });
-// ProjectsSection طالما معلّق، ما تستوردها الآن
+const ProjectsSection = dynamic(() => import("./components/ProjectsSection8"), {
+  ssr: false,
+});
 const ContactSection = dynamic(() => import("./components/ContactSection9"), {
   ssr: false,
 });
@@ -23,12 +28,10 @@ const Footer = dynamic(() => import("./components/Footer"), { ssr: false });
 const AnimatedBackground = dynamic(
   () =>
     import("./components/AnimatedBackground2").then(
-      (mod) => mod.AnimatedBackground
+      (mod) => mod.AnimatedBackground,
     ),
-  { ssr: false }
+  { ssr: false },
 );
-
-import dynamic from "next/dynamic";
 
 export default function CodariseWebsite() {
   const [activeSection, setActiveSection] = useState("hero");
@@ -42,7 +45,7 @@ export default function CodariseWebsite() {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
 
     const sections = document.querySelectorAll("section[id]");
@@ -52,19 +55,21 @@ export default function CodariseWebsite() {
   }, []);
 
   return (
-    <div className="min-h-screen text-white overflow-x-hidden">
+    <div className="relative isolate min-h-screen overflow-x-hidden text-white">
       <AnimatedBackground />
-      <Navigation
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-      />
-      <HeroSection />
-      <AboutSection />
-      <ServicesSection />
-      <TeamSection />
-      {/* <ProjectsSection /> */}
-      <ContactSection />
-      <Footer />
+      <div className="relative z-10">
+        <Navigation
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+        />
+        <HeroSection />
+        <AboutSection />
+        <ServicesSection />
+        <TeamSection />
+        <ProjectsSection />
+        <ContactSection />
+        <Footer />
+      </div>
 
       <style jsx>{`
         @keyframes blob {

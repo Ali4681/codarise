@@ -64,7 +64,7 @@ const FloatingParticles = ({
       rotateDirection: Math.random() > 0.5 ? 1 : -1,
       rotateSpeed: 10 + Math.random() * 20, // degrees per second
       scaleRange: 0.15 + Math.random() * 0.15,
-    }))
+    })),
   );
 
   return (
@@ -93,24 +93,24 @@ const FloatingParticles = ({
               }
               25% {
                 transform: translate(${p.translateXRange / 2}px, ${
-            -p.translateYRange / 2
-          }px) rotate(${(p.rotateDirection * p.rotateSpeed) / 4}deg) scale(${
-            1 + p.scaleRange
-          });
+                  -p.translateYRange / 2
+                }px) rotate(${(p.rotateDirection * p.rotateSpeed) / 4}deg) scale(${
+                  1 + p.scaleRange
+                });
                 opacity: ${p.opacity * 0.8};
               }
               50% {
                 transform: translate(${p.translateXRange}px, ${
-            p.translateYRange
-          }px) rotate(${(p.rotateDirection * p.rotateSpeed) / 2}deg) scale(1);
+                  p.translateYRange
+                }px) rotate(${(p.rotateDirection * p.rotateSpeed) / 2}deg) scale(1);
                 opacity: ${p.opacity};
               }
               75% {
                 transform: translate(${p.translateXRange / 2}px, ${
-            -p.translateYRange / 2
-          }px) rotate(${(p.rotateDirection * p.rotateSpeed) / 4}deg) scale(${
-            1 - p.scaleRange
-          });
+                  -p.translateYRange / 2
+                }px) rotate(${(p.rotateDirection * p.rotateSpeed) / 4}deg) scale(${
+                  1 - p.scaleRange
+                });
                 opacity: ${p.opacity * 0.8};
               }
             }

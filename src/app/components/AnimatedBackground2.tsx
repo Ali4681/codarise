@@ -137,7 +137,7 @@ export const AnimatedBackground = () => {
   const currentTheme = isDarkMode ? themeColors.dark : themeColors.light;
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       {/* Base Mystical Gradient */}
       <div
         className={`absolute inset-0 bg-gradient-to-br ${currentTheme.baseGradient}`}

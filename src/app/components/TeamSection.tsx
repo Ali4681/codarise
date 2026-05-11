@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useTheme } from "./ThemeProvider";
 import { useTranslation } from "react-i18next";
+import { useDirection } from "./useDirection";
 
 const team = [
   {
@@ -122,8 +123,8 @@ const cardVariants = {
 const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
   const [imageError, setImageError] = useState(false);
   const { isDarkMode } = useTheme();
-  const { i18n } = useTranslation();
-  const currentLang = i18n.language;
+  const { language } = useDirection();
+  const currentLang = language.startsWith("ar") ? "ar" : "en";
 
   const name = member.name[currentLang as "en" | "ar"] || member.name.en;
   const role = member.role[currentLang as "en" | "ar"] || member.role.en;
@@ -219,7 +220,7 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
           </p>
         </div>
 
-        <div className="mt-4 flex justify-center space-x-3 rtl:space-x-reverse">
+        <div className="mt-4 flex justify-center gap-3">
           <motion.a
             href={member.social.github}
             target="_blank"
@@ -276,15 +277,14 @@ const TeamCard = ({ member }: { member: (typeof team)[0] }) => {
 const TeamSection = () => {
   const { isDarkMode } = useTheme();
   const { t } = useTranslation("common");
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
+  const { dir } = useDirection();
 
   return (
     <section
       id="team"
       className={`py-20 relative ${isDarkMode ? "" : ""}`}
       aria-labelledby="team-title"
-      dir={isRTL ? "rtl" : "ltr"}
+      dir={dir}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
