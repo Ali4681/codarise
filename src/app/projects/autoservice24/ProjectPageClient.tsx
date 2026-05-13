@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LanguageToggle from "../../components/LanguageToggle";
 import { useTheme } from "../../components/ThemeProvider";
@@ -26,6 +27,10 @@ import {
   autoservice24Project,
   getAutoservice24Content,
 } from "../../data/autoservice24";
+import {
+  educationalInstituteProject,
+  getEducationalInstituteContent,
+} from "../../data/educationalInstitute";
 import BookGallery from "@/app/components/BookGallery";
 
 /* ── Types ────────────────────────────────────────────────────────────── */
@@ -310,10 +315,35 @@ const getColorClasses = (color: string, isDarkMode: boolean) => {
 export default function ProjectPageClient() {
   const { isDarkMode } = useTheme();
   const { language } = useDirection();
-  const content = getAutoservice24Content(language);
+  const pathname = usePathname();
+  const isEducationalInstituteProject = pathname.includes(
+    "educational-institute-management-system",
+  );
+  const project = isEducationalInstituteProject
+    ? educationalInstituteProject
+    : autoservice24Project;
+  const content = isEducationalInstituteProject
+    ? getEducationalInstituteContent(language)
+    : getAutoservice24Content(language);
+  const heroPreviewShots = isEducationalInstituteProject
+    ? [
+        educationalInstituteProject.screenshots[6],
+        educationalInstituteProject.screenshots[7],
+      ]
+    : project.screenshots.slice(0, 2);
+  const heroImageClass = isEducationalInstituteProject
+    ? "h-[34rem] w-full object-contain transition-transform duration-500 group-hover:scale-[1.02] sm:h-[40rem] lg:h-[44rem]"
+    : "h-[24rem] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] sm:h-[30rem] lg:h-[34rem]";
   const lang = language.startsWith("ar") ? "ar" : "en";
   const layoutDir = lang === "ar" ? "rtl" : "ltr";
   const isRTL = layoutDir === "rtl";
+  const heroGridClass = isEducationalInstituteProject
+    ? isRTL
+      ? "lg:grid-cols-[1.15fr_0.85fr]"
+      : "lg:grid-cols-[0.85fr_1.15fr]"
+    : isRTL
+      ? "lg:grid-cols-[0.9fr_1.1fr]"
+      : "lg:grid-cols-[1.1fr_0.9fr]";
 
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
   const [magicParticles, setMagicParticles] = useState<MagicParticle[]>([]);
@@ -376,6 +406,27 @@ export default function ProjectPageClient() {
   const overviewOrderClass = isRTL ? "lg:order-2" : "lg:order-1";
   const challengeOrderClass = isRTL ? "lg:order-1" : "lg:order-2";
   const textAlignClass = isRTL ? "text-right" : "text-left";
+  const heroLogoTitleClass = isEducationalInstituteProject
+    ? `mb-4 flex min-w-0 flex-col gap-3 ${
+        isRTL ? "items-end" : "items-start"
+      }`
+    : `mb-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 ${
+        isRTL ? "items-end" : "items-start"
+      } ${isRTL ? "sm:flex-row-reverse" : ""}`;
+  const heroTitleClass = isEducationalInstituteProject
+    ? "sr-only"
+    : `min-w-0 break-words ${textAlignClass} ${gradientDirectionClass} bg-clip-text text-3xl font-bold leading-[1.05] text-transparent sm:text-5xl sm:leading-tight md:text-6xl ${
+        isDarkMode
+          ? "from-blue-400 via-purple-400 to-pink-400"
+          : "from-blue-600 via-purple-600 to-pink-600"
+      }`;
+  const heroSubtitleClass = isEducationalInstituteProject
+    ? `mb-8 max-w-2xl text-base leading-relaxed sm:text-lg ${textAlignClass} ${
+        isDarkMode ? "text-purple-200" : "text-purple-800"
+      }`
+    : `mb-8 max-w-2xl text-base leading-relaxed sm:mb-10 sm:text-lg ${textAlignClass} ${
+        isDarkMode ? "text-purple-200" : "text-purple-800"
+      }`;
 
   const fixedActionButtonClass =
     "min-h-[3.5rem] sm:min-w-[13rem] justify-center text-center";
@@ -392,6 +443,13 @@ export default function ProjectPageClient() {
   const cardBase = isDarkMode
     ? "bg-black/40 border-slate-700/50 backdrop-blur-sm"
     : "bg-white/80 border-slate-200 backdrop-blur-sm";
+  const heroImageFrameClass = isEducationalInstituteProject
+    ? `group relative mx-auto max-w-[28rem] overflow-hidden rounded-[2rem] border transition-all duration-500 ${
+        isDarkMode
+          ? "border-white/10 bg-white shadow-[0_28px_80px_rgba(0,0,0,0.35)]"
+          : "border-slate-200 bg-white shadow-[0_28px_70px_rgba(99,102,241,0.18)]"
+      }`
+    : `group relative overflow-hidden rounded-[1.5rem] border transition-all duration-500 sm:rounded-[2rem] ${cardBase} ${cyanC.border}`;
 
   return (
     <div
@@ -602,8 +660,8 @@ export default function ProjectPageClient() {
             >
               <div className="relative h-8 w-8 overflow-hidden rounded-xl shadow-lg">
                 <Image
-                  src={autoservice24Project.brandAssets.logo}
-                  alt="AutoService24"
+                  src={project.brandAssets.logo}
+                  alt={content.detailTitle}
                   fill
                   className="object-cover"
                 />
@@ -613,7 +671,7 @@ export default function ProjectPageClient() {
                   isDarkMode ? "text-white" : "text-slate-900"
                 }`}
               >
-                AutoService24
+                {content.detailTitle}
               </span>
             </div>
 
@@ -635,7 +693,7 @@ export default function ProjectPageClient() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* ── Hero ──────────────────────────────────────────────────── */}
           <section className="py-10 sm:py-12 md:py-20">
-            <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+            <div className={`grid items-center gap-8 ${heroGridClass} lg:gap-12`}>
               {/* Left: content */}
               <div
                 className={`min-w-0 ${heroContentOrderClass} ${textAlignClass}`}
@@ -667,29 +725,21 @@ export default function ProjectPageClient() {
                 </div>
 
                 {/* Logo + title with magical aura */}
-                <div
-                  className={`mb-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 ${
-                    isRTL ? "items-end" : "items-start"
-                  } ${isRTL ? "sm:flex-row-reverse" : ""}`}
-                >
+                <div className={heroLogoTitleClass}>
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[1.25rem] shadow-2xl sm:h-[68px] sm:w-[68px]">
                     <Image
-                      src={autoservice24Project.brandAssets.logo}
-                      alt="AutoService24 Logo"
+                      src={project.brandAssets.logo}
+                      alt={content.detailTitle}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <h1
-                    className={`min-w-0 break-words ${textAlignClass} ${gradientDirectionClass} bg-clip-text text-3xl font-bold leading-[1.05] text-transparent sm:text-5xl sm:leading-tight md:text-6xl ${
-                      isDarkMode
-                        ? "from-blue-400 via-purple-400 to-pink-400"
-                        : "from-blue-600 via-purple-600 to-pink-600"
-                    }`}
+                    className={heroTitleClass}
                   >
                     <span className="relative">
                       {content.detailTitle}
-                      {!isMobile && (
+                      {!isMobile && !isEducationalInstituteProject && (
                         <div
                           className={`absolute -inset-4 ${gradientDirectionClass} blur-xl animate-pulse ${
                             isDarkMode
@@ -704,46 +754,45 @@ export default function ProjectPageClient() {
 
                 {/* Subtitle */}
                 <p
-                  className={`mb-8 max-w-2xl text-base leading-relaxed sm:mb-10 sm:text-lg ${textAlignClass} ${
-                    isDarkMode ? "text-purple-200" : "text-purple-800"
-                  }`}
+                  className={heroSubtitleClass}
                 >
                   {content.detailSubtitle}
                 </p>
 
-                {/* Store CTAs */}
-                <div
-                  className={`mb-10 flex flex-col gap-3 sm:mb-12 sm:flex-row sm:flex-wrap sm:gap-4 ${
-                    isRTL ? "sm:flex-row-reverse" : ""
-                  }`}
-                >
-                  <a
-                    href={autoservice24Project.storeLinks.appStore}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex w-full items-center gap-3 rounded-full border px-6 py-3.5 text-sm font-bold transition-all duration-300 hover:scale-[1.04] sm:w-auto ${fixedActionButtonClass} ${
-                      isRTL ? "flex-row-reverse" : ""
-                    } ${
-                      isDarkMode
-                        ? "border-white/20 bg-white/10 text-white hover:bg-white/20"
-                        : "border-slate-900 bg-slate-900 text-white hover:bg-slate-700"
+                {!isEducationalInstituteProject && (
+                  <div
+                    className={`mb-10 flex flex-col gap-3 sm:mb-12 sm:flex-row sm:flex-wrap sm:gap-4 ${
+                      isRTL ? "sm:flex-row-reverse" : ""
                     }`}
                   >
-                    <span>{content.appStoreLabel}</span>
-                    <ExternalLink className="h-4 w-4 shrink-0" />
-                  </a>
-                  <a
-                    href={autoservice24Project.storeLinks.googlePlay}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex w-full items-center gap-3 rounded-full ${gradientDirectionClass} from-blue-600 to-purple-700 px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_0_25px_5px_rgba(139,92,246,0.5)] sm:w-auto ${fixedActionButtonClass} ${
-                      isRTL ? "flex-row-reverse" : ""
-                    }`}
-                  >
-                    <span>{content.googlePlayLabel}</span>
-                    <ExternalLink className="h-4 w-4 shrink-0" />
-                  </a>
-                </div>
+                    <a
+                      href={project.storeLinks.appStore}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex w-full items-center gap-3 rounded-full border px-6 py-3.5 text-sm font-bold transition-all duration-300 hover:scale-[1.04] sm:w-auto ${fixedActionButtonClass} ${
+                        isRTL ? "flex-row-reverse" : ""
+                      } ${
+                        isDarkMode
+                          ? "border-white/20 bg-white/10 text-white hover:bg-white/20"
+                          : "border-slate-900 bg-slate-900 text-white hover:bg-slate-700"
+                      }`}
+                    >
+                      <span>{content.appStoreLabel}</span>
+                      <ExternalLink className="h-4 w-4 shrink-0" />
+                    </a>
+                    <a
+                      href={project.storeLinks.googlePlay}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex w-full items-center gap-3 rounded-full ${gradientDirectionClass} from-blue-600 to-purple-700 px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_0_25px_5px_rgba(139,92,246,0.5)] sm:w-auto ${fixedActionButtonClass} ${
+                        isRTL ? "flex-row-reverse" : ""
+                      }`}
+                    >
+                      <span>{content.googlePlayLabel}</span>
+                      <ExternalLink className="h-4 w-4 shrink-0" />
+                    </a>
+                  </div>
+                )}
 
                 {/* Highlight cards — cyan */}
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -775,33 +824,37 @@ export default function ProjectPageClient() {
 
               {/* Right: visuals */}
               <div className={`space-y-3 sm:space-y-4 ${heroVisualOrderClass}`}>
-                <div
-                  className={`group relative overflow-hidden rounded-[1.5rem] border transition-all duration-500 sm:rounded-[2rem] ${cardBase} ${cyanC.border}`}
-                >
+                <div className={heroImageFrameClass}>
                   <Image
-                    src={autoservice24Project.brandAssets.hero}
-                    alt="AutoService24 hero"
+                    src={project.brandAssets.hero}
+                    alt={content.detailTitle}
                     width={1200}
                     height={1200}
-                    className="h-[24rem] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] sm:h-[30rem] lg:h-[34rem]"
+                    className={heroImageClass}
                     priority
                   />
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-t ${
-                      isDarkMode
-                        ? "from-slate-950/50 to-transparent"
-                        : "from-white/20 to-transparent"
-                    }`}
-                  />
-                  <div
-                    className={`absolute bottom-3 ${isRTL ? "right-3 sm:right-4" : "left-3 sm:left-4"} rounded-2xl border px-3 py-2 backdrop-blur-md ${autoProjectImageBadgeClass}`}
-                  >
-                    <p className="text-xs font-bold">{content.cardEyebrow}</p>
-                  </div>
+                  {!isEducationalInstituteProject && (
+                    <>
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-t ${
+                          isDarkMode
+                            ? "from-slate-950/50 to-transparent"
+                            : "from-white/20 to-transparent"
+                        }`}
+                      />
+                      <div
+                        className={`absolute bottom-3 ${isRTL ? "right-3 sm:right-4" : "left-3 sm:left-4"} rounded-2xl border px-3 py-2 backdrop-blur-md ${autoProjectImageBadgeClass}`}
+                      >
+                        <p className="text-xs font-bold">
+                          {content.cardEyebrow}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  {autoservice24Project.screenshots.slice(0, 2).map((shot) => (
+                  {heroPreviewShots.map((shot) => (
                     <div
                       key={shot.key}
                       className={`relative overflow-hidden rounded-[1.25rem] border transition-all duration-300 hover:scale-[1.03] sm:rounded-[1.5rem] ${cardBase} ${cyanC.border}`}
@@ -930,7 +983,7 @@ export default function ProjectPageClient() {
           </section>
 
           {/* ── Features ──────────────────────────────────────────────── */}
-          <section className="py-8 md:py-16">
+          <section id="features" className="py-8 md:py-16">
             <div className="mb-10 md:mb-16 text-center">
               <div
                 className={`mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] ${cyanC.border} ${cyanC.bg}`}
@@ -1066,7 +1119,7 @@ export default function ProjectPageClient() {
           </section>
 
           {/* ── Gallery ───────────────────────────────────────────────── */}
-          <section className="py-8 md:py-16">
+          <section id="gallery" className="py-8 md:py-16">
             <div className="mb-10 md:mb-16 text-center">
               <div
                 className={`mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] ${cyanC.border} ${cyanC.bg}`}
@@ -1093,10 +1146,11 @@ export default function ProjectPageClient() {
             </div>
 
             <BookGallery
-              screenshots={autoservice24Project.screenshots}
+              screenshots={project.screenshots}
               lang={lang}
               isDarkMode={isDarkMode}
               isRTL={isRTL}
+              projectLabel={content.detailTitle}
             />
           </section>
 
@@ -1145,8 +1199,8 @@ export default function ProjectPageClient() {
                     <div className="relative">
                       <div className="relative h-14 w-14 overflow-hidden rounded-[1.25rem] shadow-2xl sm:h-16 sm:w-16">
                         <Image
-                          src={autoservice24Project.brandAssets.logo}
-                          alt="AutoService24"
+                          src={project.brandAssets.logo}
+                          alt={content.detailTitle}
                           fill
                           className="object-cover"
                         />
@@ -1180,38 +1234,40 @@ export default function ProjectPageClient() {
                     {content.storesSubtitle}
                   </p>
 
-                  <div
-                    className={`flex flex-col items-center justify-center gap-4 sm:flex-row ${
-                      isRTL ? "sm:flex-row-reverse" : ""
-                    }`}
-                  >
-                    <a
-                      href={autoservice24Project.storeLinks.appStore}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`inline-flex w-full items-center gap-3 rounded-full border px-6 py-4 text-sm font-bold transition-all duration-300 hover:scale-[1.04] hover:shadow-xl sm:w-auto sm:px-8 ${fixedLargeActionButtonClass} ${
-                        isRTL ? "flex-row-reverse" : ""
-                      } ${
-                        isDarkMode
-                          ? "border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-white/10"
-                          : "border-slate-900 bg-slate-900 text-white hover:bg-slate-700 hover:shadow-slate-900/20"
+                  {!isEducationalInstituteProject && (
+                    <div
+                      className={`flex flex-col items-center justify-center gap-4 sm:flex-row ${
+                        isRTL ? "sm:flex-row-reverse" : ""
                       }`}
                     >
-                      <span>{content.appStoreLabel}</span>
-                      <ExternalLink className="h-4 w-4 shrink-0" />
-                    </a>
-                    <a
-                      href={autoservice24Project.storeLinks.googlePlay}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`inline-flex w-full items-center gap-3 rounded-full ${gradientDirectionClass} from-blue-600 to-purple-700 px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_0_25px_5px_rgba(139,92,246,0.5)] sm:w-auto ${fixedActionButtonClass} ${
-                        isRTL ? "flex-row-reverse" : ""
-                      }`}
-                    >
-                      <span>{content.googlePlayLabel}</span>
-                      <ExternalLink className="h-4 w-4 shrink-0" />
-                    </a>
-                  </div>
+                      <a
+                        href={project.storeLinks.appStore}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex w-full items-center gap-3 rounded-full border px-6 py-4 text-sm font-bold transition-all duration-300 hover:scale-[1.04] hover:shadow-xl sm:w-auto sm:px-8 ${fixedLargeActionButtonClass} ${
+                          isRTL ? "flex-row-reverse" : ""
+                        } ${
+                          isDarkMode
+                            ? "border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-white/10"
+                            : "border-slate-900 bg-slate-900 text-white hover:bg-slate-700 hover:shadow-slate-900/20"
+                        }`}
+                      >
+                        <span>{content.appStoreLabel}</span>
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                      <a
+                        href={project.storeLinks.googlePlay}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex w-full items-center gap-3 rounded-full ${gradientDirectionClass} from-blue-600 to-purple-700 px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_0_25px_5px_rgba(139,92,246,0.5)] sm:w-auto ${fixedActionButtonClass} ${
+                          isRTL ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        <span>{content.googlePlayLabel}</span>
+                        <ExternalLink className="h-4 w-4 shrink-0" />
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

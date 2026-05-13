@@ -17,6 +17,7 @@ interface BookGalleryProps {
   lang: "en" | "ar";
   isDarkMode: boolean;
   isRTL: boolean;
+  projectLabel?: string;
 }
 
 interface PageMetaProps {
@@ -28,6 +29,7 @@ interface PageMetaProps {
   isRTL: boolean;
   compact: boolean;
   portrait: boolean;
+  projectLabel: string;
 }
 
 interface ImagePageProps {
@@ -59,7 +61,20 @@ const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
 const InfoPage = React.forwardRef<HTMLDivElement, PageMetaProps>(
-  ({ shot, index, total, lang, isDarkMode, isRTL, compact, portrait }, ref) => {
+  (
+    {
+      shot,
+      index,
+      total,
+      lang,
+      isDarkMode,
+      isRTL,
+      compact,
+      portrait,
+      projectLabel,
+    },
+    ref,
+  ) => {
     const accent = isDarkMode ? "#a78bfa" : "#7c3aed";
     const bg = isDarkMode ? "#0f172a" : "#f8fafc";
     const textColor = isDarkMode ? "#e2e8f0" : "#334155";
@@ -146,7 +161,7 @@ const InfoPage = React.forwardRef<HTMLDivElement, PageMetaProps>(
                 margin: 0,
               }}
             >
-              AutoService24
+              {projectLabel}
             </p>
             <div
               style={{
@@ -368,6 +383,7 @@ export default function BookGallery({
   lang,
   isDarkMode,
   isRTL,
+  projectLabel = "AutoService24",
 }: BookGalleryProps) {
   const total = screenshots.length;
   const [currentPage, setCurrentPage] = useState(0);
@@ -625,6 +641,7 @@ export default function BookGallery({
               isRTL={isRTL}
               compact={compactPage}
               portrait={portraitMode}
+              projectLabel={projectLabel}
             />,
             <ImagePage
               key={`img-${index}`}
