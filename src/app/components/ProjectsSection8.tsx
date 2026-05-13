@@ -198,7 +198,7 @@ const ProjectsSection = () => {
 
                   <button
                     onClick={() => setActive(idx)}
-                    className={`project-item relative w-full overflow-hidden rounded-[1.35rem] border p-5 text-${isRTL ? "right" : "left"} transition-all duration-300 ${
+                    className={`project-item relative w-full overflow-hidden rounded-[1.35rem] border p-4 text-${isRTL ? "right" : "left"} transition-all duration-300 sm:p-5 ${
                       isSelected
                         ? isDarkMode
                           ? "border-white/15 bg-white/[0.07] shadow-[0_18px_45px_rgba(0,0,0,0.28)]"
@@ -227,93 +227,103 @@ const ProjectsSection = () => {
                             ? "text-white/[0.035]"
                             : "text-indigo-950/[0.035]"
                       }`}
-                      style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                      style={{
+                        fontFamily: "'Playfair Display', Georgia, serif",
+                      }}
                     >
                       {project.num}
                     </span>
                     <div
-                      className={`relative flex items-start gap-5 ${
-                        isRTL ? "flex-row-reverse" : ""
+                      className={`relative flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5 ${
+                        isRTL ? "sm:flex-row-reverse" : ""
                       }`}
                     >
-                      {/* index */}
-                      <span
-                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border text-[13px] font-bold tracking-[.02em] transition-colors duration-200 ${
-                          isSelected
-                            ? isDarkMode
-                              ? "border-purple-300/30 bg-purple-500/10 text-purple-100"
-                              : "border-indigo-200 bg-indigo-50 text-indigo-700"
-                            : isDarkMode
-                              ? "border-white/10 text-slate-400"
-                              : "border-indigo-100 text-slate-500"
-                        }`}
-                        style={{
-                          fontFamily: "'Playfair Display', Georgia, serif",
-                        }}
-                      >
-                        {project.num}
-                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div
+                          className={`flex min-w-0 items-start gap-3 sm:gap-5 ${
+                            isRTL ? "flex-row-reverse" : ""
+                          }`}
+                        >
+                          {/* index */}
+                          <span
+                            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border text-[12px] font-bold tracking-[.02em] transition-colors duration-200 sm:h-10 sm:w-10 sm:text-[13px] ${
+                              isSelected
+                                ? isDarkMode
+                                  ? "border-purple-300/30 bg-purple-500/10 text-purple-100"
+                                  : "border-indigo-200 bg-indigo-50 text-indigo-700"
+                                : isDarkMode
+                                  ? "border-white/10 text-slate-400"
+                                  : "border-indigo-100 text-slate-500"
+                            }`}
+                            style={{
+                              fontFamily: "'Playfair Display', Georgia, serif",
+                            }}
+                          >
+                            {project.num}
+                          </span>
 
-                      {/* middle */}
-                      <div className="flex-1 min-w-0">
-                        <p
-                          className={`text-[9px] font-medium tracking-[.22em] uppercase mb-1.5 ${
-                            isDarkMode ? "text-purple-200" : "text-indigo-700"
-                          }`}
-                        >
-                          {project.cat}
-                        </p>
-                        <h3
-                          className={`leading-[1.1] tracking-[-0.01em] transition-colors duration-200 ${
-                            isDarkMode ? "text-white" : "text-slate-900"
-                          }`}
-                          style={{
-                            fontFamily: "'Playfair Display', Georgia, serif",
-                            fontSize: "clamp(1.25rem, 3vw, 1.5rem)",
-                            fontWeight: 700,
-                          }}
-                        >
-                          {project.content.cardTitle}
-                        </h3>
+                          {/* middle */}
+                          <div className="min-w-0 flex-1">
+                            <p
+                              className={`mb-1.5 max-w-full text-[8px] font-medium uppercase tracking-[.14em] [overflow-wrap:anywhere] sm:text-[9px] sm:tracking-[.22em] ${
+                                isDarkMode ? "text-purple-200" : "text-indigo-700"
+                              }`}
+                            >
+                              {project.cat}
+                            </p>
+                            <h3
+                              className={`max-w-full leading-[1.12] transition-colors duration-200 [overflow-wrap:anywhere] sm:leading-[1.1] ${
+                                isDarkMode ? "text-white" : "text-slate-900"
+                              }`}
+                              style={{
+                                fontFamily: "'Playfair Display', Georgia, serif",
+                                fontSize: "clamp(1.05rem, 4.8vw, 1.5rem)",
+                                fontWeight: 700,
+                              }}
+                            >
+                              {project.content.cardTitle}
+                            </h3>
+                          </div>
+                        </div>
 
                         {/* expandable detail */}
                         <div
                           id={`project-detail-${idx}`}
-                          className="project-detail overflow-hidden transition-all duration-300 ease-in-out"
+                          className="project-detail min-w-0 overflow-hidden transition-all duration-300 ease-in-out"
                           style={{
-                            maxHeight: isSelected ? "520px" : "0px",
+                            maxHeight: isSelected ? "620px" : "0px",
                             opacity: isSelected ? 1 : 0,
                             marginTop: isSelected ? "12px" : "0px",
                           }}
                         >
                           {/* description */}
                           <p
-                            className={`text-[12.5px] leading-[1.75] mb-3 ${
+                            className={`mb-3 max-w-full text-[12px] leading-[1.7] [overflow-wrap:anywhere] sm:text-[12.5px] sm:leading-[1.75] ${
                               isDarkMode ? "text-slate-300" : "text-slate-700"
                             }`}
                           >
                             {project.content.cardDescription}
                           </p>
 
-                          {/* tags */}
-                          <div
-                            className={`flex flex-wrap gap-1.5 mb-4 ${
-                              isRTL ? "flex-row-reverse" : ""
-                            }`}
-                          >
-                            {project.cfg.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className={`text-[9.5px] font-medium tracking-[.06em] px-2.5 py-1 rounded-[3px] border ${
-                                  isDarkMode
-                                    ? "bg-white/[0.06] text-slate-200 border-white/10"
-                                    : "bg-indigo-50 text-indigo-800 border-indigo-100"
-                                }`}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
+                        {/* tags */}
+                        <div
+                          className={`mb-4 flex flex-wrap gap-1.5 ${
+                            isRTL ? "flex-row-reverse" : ""
+                          }`}
+                        >
+                          {project.cfg.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className={`max-w-full rounded-[3px] border px-2 py-1 text-[9px] font-medium tracking-[.03em] [overflow-wrap:anywhere] sm:px-2.5 sm:text-[9.5px] sm:tracking-[.06em] ${
+                                isDarkMode
+                                  ? "bg-white/[0.06] text-slate-200 border-white/10"
+                                  : "bg-indigo-50 text-indigo-800 border-indigo-100"
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
 
                           {/* CTAs */}
                           <div
@@ -324,11 +334,13 @@ const ProjectsSection = () => {
                             <Link
                               href={project.href}
                               onClick={(e) => e.stopPropagation()}
-                              className="project-cta inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[11px] font-semibold text-white transition-opacity duration-200 hover:opacity-85"
+                              className="project-cta inline-flex max-w-full items-center gap-1.5 rounded-full px-3.5 py-2 text-[10.5px] font-semibold text-white transition-opacity duration-200 hover:opacity-85 sm:px-4 sm:text-[11px]"
                               style={{ background: project.cfg.color }}
                             >
-                              <span>{project.content.cardCta}</span>
-                              <ArrowUpRight className="h-3 w-3" />
+                              <span className="min-w-0 [overflow-wrap:anywhere]">
+                                {project.content.cardCta}
+                              </span>
+                              <ArrowUpRight className="h-3 w-3 flex-shrink-0" />
                             </Link>
                           </div>
                         </div>
@@ -336,19 +348,19 @@ const ProjectsSection = () => {
 
                       {/* right: stack + arrow */}
                       <div
-                        className={`flex flex-col gap-2.5 flex-shrink-0 ${
-                          isRTL ? "items-start" : "items-end"
+                        className={`flex min-w-0 flex-shrink-0 flex-row items-center justify-between gap-2.5 sm:flex-col ${
+                          isRTL ? "sm:items-start" : "sm:items-end"
                         }`}
                       >
                         <div
-                          className={`flex flex-wrap gap-1 max-w-[160px] ${
-                            isRTL ? "justify-start" : "justify-end"
+                          className={`flex max-w-full flex-1 flex-wrap gap-1 sm:max-w-[160px] ${
+                            isRTL ? "justify-start" : "sm:justify-end"
                           }`}
                         >
                           {project.cfg.stack.map((s) => (
                             <span
                               key={s}
-                              className={`text-[9px] font-medium tracking-[.05em] px-2 py-1 rounded-[3px] border ${
+                              className={`max-w-full rounded-[3px] border px-2 py-1 text-[8.5px] font-medium tracking-[.03em] [overflow-wrap:anywhere] sm:text-[9px] sm:tracking-[.05em] ${
                                 isDarkMode
                                   ? "bg-white/[0.05] text-slate-300 border-white/10"
                                   : "bg-white/85 text-slate-700 border-indigo-100"
@@ -361,7 +373,7 @@ const ProjectsSection = () => {
 
                         {/* arrow */}
                         <div
-                          className={`w-7 h-7 rounded-full border flex items-center justify-center transition-all duration-200 ${
+                          className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border transition-all duration-200 ${
                             isSelected
                               ? isDarkMode
                                 ? "border-purple-300/50 text-purple-100 bg-purple-500/10"
