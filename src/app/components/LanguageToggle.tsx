@@ -119,8 +119,8 @@ const LanguageToggle: React.FC = () => {
         disabled={isAnimating}
         aria-label={
           nextLanguage
-            ? `Switch language to ${nextLanguage.fullLabel}`
-            : "Switch language"
+            ? `${currentLanguage.label} - Switch language to ${nextLanguage.fullLabel}`
+            : `${currentLanguage.label} - Switch language`
         }
         title={
           nextLanguage

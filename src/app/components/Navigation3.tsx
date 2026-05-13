@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import LanguageToggle from "./LanguageToggle";
 import ThemeToggle from "./ThemeToggle";
+import { SoundToggleButton } from "./SoundIntro";
 import { getAutoservice24Content } from "../data/autoservice24";
 import { useDirection } from "./useDirection";
 
@@ -202,17 +203,19 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
           inset-inline-start: 0;
           z-index: 51;
           height: 2px;
-          width: var(--sw, 0%);
+          width: 100%;
           background: linear-gradient(to right, #3b82f6, #a855f7, #06b6d4);
-          transition: width 0.1s linear;
+          transform: scaleX(var(--sp, 0));
+          transform-origin: left center;
+          transition: transform 0.1s linear;
         }
 
-        [dir="rtl"] .scroll-progress {
+        [dir="rtl"] .scroll-progress,
+        .scroll-progress[dir="rtl"] {
           background: linear-gradient(to left, #3b82f6, #a855f7, #06b6d4);
+          transform-origin: right center;
         }
       `}</style>
-
-      <ScrollProgress />
 
       <div
         className={`mobile-overlay ${isOpen ? "open" : ""}`}
@@ -232,13 +235,15 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
       >
         <div className="flex items-center justify-between p-4 border-b border-slate-200/60 dark:border-purple-500/30">
           <div className="nav-logo-row">
+            <div className="relative h-8 w-8">
             <Image
               src="/logo 2.PNG"
               alt={t("nav.logoAlt")}
-              width={32}
-              height={32}
+              fill
+              sizes="32px"
               className="object-contain"
             />
+            </div>
             <span className="brand-text text-lg font-bold">
               <span className="text-slate-800 dark:text-white">CODAR</span>
               <span className="text-blue-600 dark:text-cyan-400">ISE</span>
@@ -277,9 +282,12 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
           ))}
         </nav>
 
-        <div className="mt-auto p-4 border-t border-slate-200/60 dark:border-purple-500/30 flex items-center justify-center gap-4">
-          <LanguageToggle />
-          <ThemeToggle />
+        <div className="mt-auto p-4 border-t border-slate-200/60 dark:border-purple-500/30 flex flex-col gap-3">
+          <SoundToggleButton placement="drawer" />
+          <div className="flex items-center justify-center gap-4">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
 
@@ -299,15 +307,16 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
               type="button"
               className="nav-logo-row group cursor-pointer"
               onClick={() => scrollToSection("hero")}
-              aria-label={t("nav.home")}
+              aria-label="CODARISE"
+              title={t("nav.home")}
             >
               <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-md group-hover:shadow-purple-500/30 transition-shadow duration-300">
                 <Image
                   src="/logo 2.PNG"
-                  alt={t("nav.logoAlt")}
-                  width={48}
-                  height={48}
-                  className="object-contain w-full h-full group-hover:scale-110 transition-transform duration-300"
+                  alt=""
+                  fill
+                  sizes="48px"
+                  className="object-contain group-hover:scale-110 transition-transform duration-300"
                   priority
                 />
               </div>
@@ -361,31 +370,5 @@ const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
     </>
   );
 };
-
-function ScrollProgress() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const update = () => {
-      const element = document.documentElement;
-      const pct =
-        (element.scrollTop / (element.scrollHeight - element.clientHeight)) *
-          100 || 0;
-      ref.current?.style.setProperty("--sw", `${pct.toFixed(1)}%`);
-    };
-
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="scroll-progress"
-      role="progressbar"
-      aria-hidden="true"
-    />
-  );
-}
 
 export default Navigation;

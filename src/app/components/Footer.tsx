@@ -62,6 +62,7 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
         }
 
         .logo-img-wrap {
+          position: relative;
           flex-shrink: 0;
           width: 3rem;
           height: 3rem;
@@ -271,9 +272,9 @@ const Footer = ({ theme: themeOverride }: FooterProps) => {
                 <Image
                   src="/logo 2.PNG"
                   alt={t("footer.logoAlt")}
-                  width={40}
-                  height={40}
-                  className="object-contain w-10 h-10"
+                  fill
+                  sizes="40px"
+                  className="object-contain"
                   priority
                 />
               </div>

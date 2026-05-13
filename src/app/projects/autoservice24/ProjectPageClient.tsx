@@ -640,7 +640,7 @@ export default function ProjectPageClient() {
         >
           <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
             <Link
-              href="/"
+              href="/#projects"
               className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-all duration-200 hover:scale-[1.03] ${headerStartClass} ${
                 isRTL ? "flex-row-reverse" : ""
               } ${

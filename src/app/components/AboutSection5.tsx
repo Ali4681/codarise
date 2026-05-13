@@ -31,6 +31,14 @@ interface FloatingOrb {
   color: string;
 }
 
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
+const seededRange = (seed: number, min: number, max: number) =>
+  min + seededRandom(seed) * (max - min);
+
 const ServicesSection = () => {
   const { isDarkMode } = useTheme();
   const { t, i18n } = useTranslation("services");
@@ -519,17 +527,11 @@ const ServicesSection = () => {
               isDarkMode ? "opacity-5" : "opacity-10"
             }`}
           >
-            <div className="grid grid-cols-20 gap-2 h-full">
-              {Array.from({ length: 200 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`border ${
-                    isDarkMode ? "border-cyan-500" : "border-cyan-300"
-                  } animate-pulse`}
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                />
-              ))}
-            </div>
+            <div
+              className={`mystical-grid h-full ${
+                isDarkMode ? "mystical-grid-dark" : "mystical-grid-light"
+              }`}
+            />
           </div>
         )}
 
@@ -576,7 +578,7 @@ const ServicesSection = () => {
         {/* Enchanted Header - Adjusted for mobile */}
         <div className="text-center mb-12 md:mb-20">
           <div className="relative inline-block">
-            <h1
+            <h2
               className={`text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r ${
                 isDarkMode
                   ? "from-cyan-400 via-purple-400 to-pink-400"
@@ -596,7 +598,7 @@ const ServicesSection = () => {
                   />
                 )}
               </span>
-            </h1>
+            </h2>
 
             {/* Floating Magic Wand - Smaller on mobile */}
             {!isMobile && (
@@ -773,10 +775,10 @@ const ServicesSection = () => {
                             isDarkMode ? "400" : "600"
                           } rounded-full opacity-80`}
                           style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
+                            left: `${seededRange(index * 100 + i * 3 + 1, 0, 100)}%`,
+                            top: `${seededRange(index * 100 + i * 3 + 2, 0, 100)}%`,
                             animationName: "sparkle",
-                            animationDuration: `${1 + Math.random()}s`,
+                            animationDuration: `${seededRange(index * 100 + i * 3 + 3, 1, 2)}s`,
                             animationTimingFunction: "ease-in-out",
                             animationIterationCount: "infinite",
                             animationDelay: `${i * 0.1}s`,
@@ -1059,10 +1061,10 @@ const ServicesSection = () => {
                                 key={i}
                                 className={`absolute w-1 h-1 bg-${step.color}-400 rounded-full opacity-80`}
                                 style={{
-                                  left: `${20 + Math.random() * 60}%`,
-                                  top: `${20 + Math.random() * 60}%`,
+                                  left: `${seededRange(index * 100 + i * 3 + 1, 20, 80)}%`,
+                                  top: `${seededRange(index * 100 + i * 3 + 2, 20, 80)}%`,
                                   animationName: "sparkle",
-                                  animationDuration: `${0.5 + Math.random()}s`,
+                                  animationDuration: `${seededRange(index * 100 + i * 3 + 3, 0.5, 1.5)}s`,
                                   animationTimingFunction: "ease-in-out",
                                   animationIterationCount: "infinite",
                                   animationDelay: `${i * 0.05}s`,
@@ -1165,6 +1167,33 @@ const ServicesSection = () => {
           }
           100% {
             box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+          }
+        }
+
+        .mystical-grid {
+          --grid-line: rgba(103, 232, 249, 0.2);
+          background-image:
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+          background-size: 52px 52px;
+          animation: gridPulse 8s ease-in-out infinite;
+        }
+
+        .mystical-grid-dark {
+          --grid-line: rgba(6, 182, 212, 0.14);
+        }
+
+        .mystical-grid-light {
+          --grid-line: rgba(103, 232, 249, 0.26);
+        }
+
+        @keyframes gridPulse {
+          0%,
+          100% {
+            opacity: 0.65;
+          }
+          50% {
+            opacity: 0.35;
           }
         }
       `}</style>

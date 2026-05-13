@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useTheme } from "./ThemeProvider";
 
 type MysticalOrb = {
@@ -30,57 +29,32 @@ type MagicRune = {
   delay: number;
 };
 
+const mysticalOrbs: MysticalOrb[] = [
+  { id: 0, size: 260, x: 8, y: 18, color: "cyan", duration: 24, delay: 0 },
+  { id: 1, size: 330, x: 78, y: 12, color: "purple", duration: 31, delay: 2 },
+  { id: 2, size: 240, x: 62, y: 72, color: "pink", duration: 28, delay: 4 },
+  { id: 3, size: 300, x: 24, y: 64, color: "indigo", duration: 34, delay: 1 },
+];
+
+const starField: Star[] = Array.from({ length: 32 }, (_, i) => ({
+  id: i,
+  x: (i * 37) % 100,
+  y: (i * 61) % 100,
+  size: (i % 3) + 1,
+  twinkleDelay: (i % 8) * 0.45,
+  brightness: 0.24 + (i % 5) * 0.12,
+}));
+
+const magicRunes: MagicRune[] = [
+  { id: 0, x: 14, y: 26, symbol: "*", rotation: 18, floatDuration: 24, delay: 0 },
+  { id: 1, x: 72, y: 20, symbol: "+", rotation: 42, floatDuration: 28, delay: 1.2 },
+  { id: 2, x: 84, y: 68, symbol: "<>", rotation: 8, floatDuration: 30, delay: 2.4 },
+  { id: 3, x: 31, y: 82, symbol: "#", rotation: 28, floatDuration: 26, delay: 0.8 },
+];
+
 export const AnimatedBackground = () => {
   const { isDarkMode } = useTheme();
-  const [mysticalOrbs, setMysticalOrbs] = useState<MysticalOrb[]>([]);
-  const [starField, setStarField] = useState<Star[]>([]);
-  const [magicRunes, setMagicRunes] = useState<MagicRune[]>([]);
 
-  useEffect(() => {
-    // Generate floating mystical orbs
-    const orbs = Array.from({ length: 8 }, (_, i) => ({
-      id: i,
-      size: 200 + Math.random() * 300,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      color: [
-        "cyan",
-        "purple",
-        "pink",
-        "indigo",
-        "violet",
-        "blue",
-        "fuchsia",
-        "emerald",
-      ][i % 8],
-      duration: 15 + Math.random() * 20,
-      delay: Math.random() * 10,
-    }));
-    setMysticalOrbs(orbs);
-
-    // Generate twinkling stars
-    const stars = Array.from({ length: 150 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      twinkleDelay: Math.random() * 5,
-      brightness: Math.random() * 0.8 + 0.2,
-    }));
-    setStarField(stars);
-
-    // Generate floating magical runes
-    const runes = Array.from({ length: 12 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      symbol: ["◊", "◈", "◇", "※", "✦", "✧", "✩", "✪", "✫", "✬", "✭", "✮"][i],
-      rotation: Math.random() * 360,
-      floatDuration: 20 + Math.random() * 15,
-      delay: Math.random() * 8,
-    }));
-    setMagicRunes(runes);
-  }, []);
 
   // Theme-based color configurations
   const themeColors = {
@@ -137,7 +111,10 @@ export const AnimatedBackground = () => {
   const currentTheme = isDarkMode ? themeColors.dark : themeColors.light;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <div
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      aria-hidden="true"
+    >
       {/* Base Mystical Gradient */}
       <div
         className={`absolute inset-0 bg-gradient-to-br ${currentTheme.baseGradient}`}
@@ -188,18 +165,25 @@ export const AnimatedBackground = () => {
         {magicRunes.map((rune) => (
           <div
             key={rune.id}
-            className={`absolute ${currentTheme.runeColor} ${currentTheme.runeOpacity} font-bold text-2xl animate-pulse`}
+            className={`absolute ${currentTheme.runeColor} ${currentTheme.runeOpacity} font-bold text-2xl`}
             style={{
               left: `${rune.x}%`,
               top: `${rune.y}%`,
-              transform: `rotate(${rune.rotation}deg)`,
-              animation: `mysticalFloat ${rune.floatDuration}s ease-in-out infinite ${rune.delay}s, runeRotate 8s linear infinite`,
+              animation: `mysticalFloat ${rune.floatDuration}s ease-in-out infinite ${rune.delay}s`,
               textShadow: isDarkMode
                 ? "0 0 10px rgba(168, 85, 247, 0.5)"
                 : "0 0 10px rgba(99, 102, 241, 0.6)",
             }}
           >
-            {rune.symbol}
+            <span
+              className="block"
+              style={{
+                transform: `rotate(${rune.rotation}deg)`,
+                animation: "runeRotate 8s linear infinite",
+              }}
+            >
+              {rune.symbol}
+            </span>
           </div>
         ))}
 
@@ -309,7 +293,7 @@ export const AnimatedBackground = () => {
         {/* Floating Geometric Shapes */}
         <div
           className={`absolute top-1/4 left-10 w-16 h-16 border ${currentTheme.portalBorders.cyan} transform rotate-45 animate-bounce opacity-30`}
-          style={{ animationDuration: "4s" }}
+          style={{ animationDuration: "8s" }}
         />
         <div
           className={`absolute top-2/3 right-16 w-12 h-12 ${
@@ -319,7 +303,7 @@ export const AnimatedBackground = () => {
         <div
           className={`absolute bottom-1/4 left-1/3 w-8 h-8 ${
             isDarkMode ? "bg-pink-500/30" : "bg-pink-600/25"
-          } rounded-full animate-ping`}
+          } rounded-full animate-pulse`}
           style={{ animationDuration: "3s" }}
         />
 

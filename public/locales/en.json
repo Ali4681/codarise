@@ -4,7 +4,12 @@
     "about": "About",
     "services": "Services",
     "team": "Team",
-    "contact": "Contact"
+    "contact": "Contact",
+    "ariaLabel": "Primary navigation",
+    "mobileMenu": "Mobile navigation menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "Codarise logo"
   },
   "title": "Our Enchanted Services",
   "subtitle": {

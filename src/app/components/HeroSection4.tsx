@@ -1,35 +1,31 @@
+"use client";
+
 import { ChevronDown, Code } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDirection } from "./useDirection";
 
+const PARTICLES = [
+  { id: 0, x: 8, y: 18, size: 3, duration: 18, delay: 0 },
+  { id: 1, x: 18, y: 72, size: 5, duration: 24, delay: 1.2 },
+  { id: 2, x: 29, y: 38, size: 4, duration: 21, delay: 0.4 },
+  { id: 3, x: 41, y: 16, size: 6, duration: 28, delay: 2.1 },
+  { id: 4, x: 53, y: 78, size: 3, duration: 19, delay: 0.8 },
+  { id: 5, x: 63, y: 30, size: 5, duration: 23, delay: 1.7 },
+  { id: 6, x: 74, y: 64, size: 4, duration: 20, delay: 0.2 },
+  { id: 7, x: 86, y: 22, size: 6, duration: 27, delay: 2.6 },
+  { id: 8, x: 92, y: 82, size: 3, duration: 22, delay: 1 },
+  { id: 9, x: 36, y: 88, size: 5, duration: 25, delay: 1.9 },
+  { id: 10, x: 12, y: 44, size: 4, duration: 26, delay: 0.6 },
+  { id: 11, x: 82, y: 48, size: 3, duration: 18, delay: 1.4 },
+];
+
 const FloatingParticles = () => {
-  const [particles, setParticles] = useState<
-    {
-      id: number;
-      x: number;
-      y: number;
-      size: number;
-      duration: number;
-      delay: number;
-    }[]
-  >([]);
-
-  useEffect(() => {
-    const newParticles = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 6 + 2,
-      duration: Math.random() * 20 + 15,
-      delay: Math.random() * 5,
-    }));
-    setParticles(newParticles);
-  }, []);
-
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
+    <div
+      className="absolute inset-0 overflow-hidden pointer-events-none"
+      aria-hidden="true"
+    >
+      {PARTICLES.map((particle) => (
         <div
           key={particle.id}
           className="absolute rounded-full bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 dark:opacity-30 animate-float"
@@ -50,21 +46,7 @@ const FloatingParticles = () => {
 const HeroSection = () => {
   const { t } = useTranslation();
   const { dir, isRTL } = useDirection();
-  const [text, setText] = useState("");
   const fullText = t("hero.title");
-
-  useEffect(() => {
-    let i = 0;
-    const timer = setInterval(() => {
-      if (i < fullText.length) {
-        setText(fullText.slice(0, i + 1));
-        i++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 80);
-    return () => clearInterval(timer);
-  }, [fullText]);
 
   return (
     <section
@@ -96,14 +78,13 @@ const HeroSection = () => {
         </div>
 
         <h1
-          className="text-6xl sm:text-7xl md:text-8xl font-extrabold mb-8
+          className="min-h-[1.15em] text-6xl sm:text-7xl md:text-8xl font-extrabold mb-8
                      bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600
                      dark:from-blue-400 dark:via-purple-400 dark:to-pink-400
                      bg-clip-text text-transparent
                      animate-fade-in"
-          aria-live="polite"
         >
-          {text}
+          {fullText}
           <span
             className={`inline-block ${
               isRTL ? "mr-1" : "ml-1"
@@ -136,11 +117,26 @@ const HeroSection = () => {
           <button
             type="button"
             className="px-10 py-4 rounded-full border-2 border-purple-500
-                       text-purple-600 dark:text-purple-400 font-semibold
-                       hover:bg-purple-500 hover:text-white
-                       transition-colors duration-300"
+             bg-transparent
+             text-purple-600 dark:text-purple-400 font-semibold
+             relative overflow-hidden group
+             transition-all duration-300
+             hover:border-purple-400
+             hover:shadow-[0_0_20px_rgba(167,139,250,0.5),0_0_40px_rgba(124,58,237,0.3)]
+             hover:scale-105 active:scale-95"
           >
-            {t("hero.secondaryButton")}
+            <span
+              className="absolute inset-0 bg-gradient-to-r from-purple-600 via-violet-500 to-purple-600
+               translate-y-full group-hover:translate-y-0
+               transition-transform duration-300 ease-out"
+            />
+            <span
+              className="relative z-10 transition-colors duration-300
+             text-purple-600 dark:text-purple-400
+             group-hover:text-white group-hover:dark:text-white"
+            >
+              {t("hero.secondaryButton")}
+            </span>
           </button>
         </div>
 

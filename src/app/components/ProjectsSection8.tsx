@@ -2,11 +2,16 @@
 
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { CSSProperties, MouseEvent } from "react";
+import { useEffect, useState } from "react";
 import { getAutoservice24Content } from "../data/autoservice24";
 import { getEducationalInstituteContent } from "../data/educationalInstitute";
 import { useTheme } from "./ThemeProvider";
 import { useDirection } from "./useDirection";
+
+const hexToRgb = (hex: string) =>
+  `${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)}`;
 
 /* ─── per-project config ─────────────────────────────────────────── */
 const PROJECT_CONFIG = [
@@ -31,10 +36,26 @@ const PROJECT_CONFIG = [
 
 /* ─── component ─────────────────────────────────────────────────── */
 const ProjectsSection = () => {
+  const router = useRouter();
   const { isDarkMode } = useTheme();
   const { dir, isRTL, language } = useDirection();
   const [active, setActive] = useState(0);
+  const [openingProject, setOpeningProject] = useState<{
+    href: string;
+    title: string;
+    color: string;
+    colorRgb: string;
+  } | null>(null);
   const sectionContent = getAutoservice24Content(language);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("returnToProjects")) {
+      sessionStorage.removeItem("returnToProjects");
+      setTimeout(() => {
+        document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+      }, 80);
+    }
+  }, []);
 
   const projects = [
     {
@@ -52,6 +73,36 @@ const ProjectsSection = () => {
       cfg: PROJECT_CONFIG[1],
     },
   ];
+
+  const openProject = (
+    event: MouseEvent<HTMLAnchorElement>,
+    project: (typeof projects)[number],
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (openingProject) {
+      return;
+    }
+
+    setOpeningProject({
+      href: project.href,
+      title: project.content.cardTitle,
+      color: project.cfg.color,
+      colorRgb: hexToRgb(project.cfg.color),
+    });
+
+    sessionStorage.setItem("returnToProjects", "1");
+
+    window.setTimeout(() => {
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      root.style.scrollBehavior = previousScrollBehavior;
+      router.push(project.href);
+    }, 900);
+  };
 
   return (
     <section
@@ -121,6 +172,7 @@ const ProjectsSection = () => {
             TOP BAR
         ══════════════════════════════════════════ */}
           <div
+            aria-hidden="true"
             className={`hidden ${
               isDarkMode ? "border-white/10" : "border-blue-100"
             }`}
@@ -128,7 +180,6 @@ const ProjectsSection = () => {
             {/* left: title block */}
             <div>
               <h2
-                id="projects-title"
                 className={`leading-[.95] tracking-tight ${
                   isDarkMode ? "text-white" : "text-slate-900"
                 }`}
@@ -207,7 +258,7 @@ const ProjectsSection = () => {
                           ? "border-white/10 bg-white/[0.025] hover:border-white/15 hover:bg-white/[0.045]"
                           : "border-indigo-100 bg-white/70 hover:border-indigo-200 hover:bg-white"
                     }`}
-                    aria-expanded={isSelected ? "true" : "false"}
+                    aria-expanded={isSelected}
                     aria-controls={`project-detail-${idx}`}
                   >
                     {isSelected && (
@@ -333,9 +384,10 @@ const ProjectsSection = () => {
                           >
                             <Link
                               href={project.href}
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(e) => openProject(e, project)}
                               className="project-cta inline-flex max-w-full items-center gap-1.5 rounded-full px-3.5 py-2 text-[10.5px] font-semibold text-white transition-opacity duration-200 hover:opacity-85 sm:px-4 sm:text-[11px]"
                               style={{ background: project.cfg.color }}
+                              aria-label={`${project.content.cardCta}: ${project.content.cardTitle}`}
                             >
                               <span className="min-w-0 [overflow-wrap:anywhere]">
                                 {project.content.cardCta}
@@ -428,23 +480,101 @@ const ProjectsSection = () => {
                 <button
                   key={idx}
                   onClick={() => setActive(idx)}
-                  aria-label={`Go to project ${idx + 1}`}
-                  className="h-[5px] rounded-full border-none cursor-pointer transition-all duration-300 ease-in-out"
+                  aria-label={`Go to project ${idx + 1}: ${project.content.cardTitle}`}
+                  className="flex h-6 w-6 items-center justify-center rounded-full border-none cursor-pointer transition-opacity duration-300 ease-in-out hover:opacity-80"
                   style={{
-                    width: active === idx ? "18px" : "5px",
-                    background:
-                      active === idx
-                        ? project.cfg.color
-                        : isDarkMode
-                          ? "rgba(255,255,255,0.2)"
-                          : "#CBD5E1",
+                    background: "transparent",
                   }}
-                />
+                >
+                  <span
+                    aria-hidden="true"
+                    className="h-[5px] rounded-full transition-all duration-300 ease-in-out"
+                    style={{
+                      width: active === idx ? "18px" : "5px",
+                      background:
+                        active === idx
+                          ? project.cfg.color
+                          : isDarkMode
+                            ? "rgba(255,255,255,0.2)"
+                            : "#CBD5E1",
+                    }}
+                  />
+                </button>
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      {openingProject ? (
+        <div
+          className="ppt-root"
+          role="status"
+          aria-label={`${openingProject.title}`}
+          style={{
+            "--pc": openingProject.color,
+            "--pcr": openingProject.colorRgb,
+          } as CSSProperties}
+        >
+          {/* Dark backdrop */}
+          <div className="ppt-backdrop" aria-hidden="true" />
+
+          {/* Color flood from center */}
+          <div className="ppt-flood" aria-hidden="true" />
+
+          {/* Expanding rings */}
+          <div className="ppt-rings" aria-hidden="true">
+            {([0, 55, 110, 165, 220] as const).map((delay) => (
+              <div
+                key={delay}
+                className="ppt-ring"
+                style={{ animationDelay: `${delay}ms` } as CSSProperties}
+              />
+            ))}
+          </div>
+
+          {/* Rotating conic sweeps */}
+          <div className="ppt-conic ppt-conic-1" aria-hidden="true" />
+          <div className="ppt-conic ppt-conic-2" aria-hidden="true" />
+
+          {/* Particle burst */}
+          <div className="ppt-particles" aria-hidden="true">
+            {Array.from({ length: 20 }, (_, i) => (
+              <span
+                key={i}
+                className="ppt-particle"
+                style={{
+                  "--pa": `${i * 18}deg`,
+                  "--pd": `${85 + (i % 5) * 42}px`,
+                  "--ps": `${2 + (i % 3)}px`,
+                  "--pde": `${i * 14}ms`,
+                } as CSSProperties}
+              />
+            ))}
+          </div>
+
+          {/* Center content */}
+          <div className="ppt-content">
+            <div className="ppt-orb" aria-hidden="true">
+              <div className="ppt-orb-glow" />
+              <div className="ppt-orb-core" />
+            </div>
+            <div className="ppt-title-block">
+              <p className="ppt-eyebrow">
+                {language === "ar" ? "جارٍ الفتح" : "Opening"}
+              </p>
+              <p className="ppt-title">{openingProject.title}</p>
+              <div className="ppt-bar" aria-hidden="true">
+                <div className="ppt-bar-fill" />
+              </div>
+            </div>
+          </div>
+
+          {/* Scan line */}
+          <div className="ppt-scanline" aria-hidden="true" />
+        </div>
+      ) : null}
+
       <style jsx>{`
         .project-heading {
           animation: projectFadeUp 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -494,6 +624,291 @@ const ProjectsSection = () => {
 
         .project-cta:hover {
           animation: projectButtonPulse 900ms ease both;
+        }
+
+        /* ── Cosmic Portal Transition ───────────────── */
+
+        .ppt-root {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          overflow: hidden;
+          display: grid;
+          place-items: center;
+        }
+
+        .ppt-backdrop {
+          position: absolute;
+          inset: 0;
+          background: rgba(2, 6, 23, 0.97);
+          animation: pptBdIn 200ms ease forwards;
+        }
+
+        .ppt-flood {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          transform: translate(-50%, -50%) scale(0);
+          background: radial-gradient(
+            circle,
+            rgba(var(--pcr), 0.65) 0%,
+            rgba(var(--pcr), 0.22) 52%,
+            transparent 100%
+          );
+          animation: pptFlood 820ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .ppt-rings {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          place-items: center;
+        }
+
+        .ppt-ring {
+          position: absolute;
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          border: 2px solid var(--pc);
+          box-shadow:
+            0 0 14px 3px rgba(var(--pcr), 0.45),
+            inset 0 0 14px 3px rgba(var(--pcr), 0.2);
+          animation: pptRingBurst 820ms ease-out forwards;
+        }
+
+        .ppt-conic {
+          position: absolute;
+          width: 220vmax;
+          height: 220vmax;
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+        }
+
+        .ppt-conic-1 {
+          background: conic-gradient(
+            from 0deg,
+            transparent 0%,
+            rgba(var(--pcr), 0.22) 14%,
+            transparent 28%,
+            rgba(var(--pcr), 0.13) 54%,
+            transparent 68%
+          );
+          animation: pptConic1 820ms ease-out forwards;
+        }
+
+        .ppt-conic-2 {
+          background: conic-gradient(
+            from 90deg,
+            rgba(var(--pcr), 0.12) 0%,
+            transparent 22%,
+            rgba(var(--pcr), 0.16) 50%,
+            transparent 72%
+          );
+          animation: pptConic2 820ms ease-out forwards;
+        }
+
+        .ppt-particles {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          place-items: center;
+        }
+
+        .ppt-particle {
+          position: absolute;
+          width: var(--ps, 3px);
+          height: var(--ps, 3px);
+          border-radius: 50%;
+          background: var(--pc);
+          box-shadow: 0 0 7px 2px rgba(var(--pcr), 0.65);
+          opacity: 0;
+          animation: pptParticle 680ms var(--pde, 0ms) cubic-bezier(0, 0.55, 0.45, 1) forwards;
+        }
+
+        .ppt-content {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.35rem;
+          animation: pptContentIn 500ms 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .ppt-orb {
+          position: relative;
+          width: 76px;
+          height: 76px;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
+          animation: pptOrbFloat 1.4s ease-in-out infinite;
+        }
+
+        .ppt-orb-glow {
+          position: absolute;
+          inset: -14px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(var(--pcr), 0.32) 0%,
+            transparent 70%
+          );
+          animation: pptOrbGlow 1.4s ease-in-out infinite;
+        }
+
+        .ppt-orb-core {
+          width: 76px;
+          height: 76px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle at 32% 32%,
+            rgba(255, 255, 255, 0.95),
+            var(--pc) 48%,
+            rgba(var(--pcr), 0.45) 100%
+          );
+          box-shadow:
+            0 0 28px 10px rgba(var(--pcr), 0.55),
+            0 0 70px 24px rgba(var(--pcr), 0.22),
+            inset 0 -5px 14px rgba(0, 0, 0, 0.28);
+        }
+
+        .ppt-title-block {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.55rem;
+        }
+
+        .ppt-eyebrow {
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.26em;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.42);
+          margin: 0;
+        }
+
+        .ppt-title {
+          font-size: clamp(1.15rem, 4.5vw, 1.65rem);
+          font-weight: 800;
+          color: #fff;
+          text-align: center;
+          text-shadow:
+            0 0 32px rgba(var(--pcr), 0.85),
+            0 0 64px rgba(var(--pcr), 0.38);
+          letter-spacing: -0.02em;
+          margin: 0;
+          max-width: min(78vw, 400px);
+          overflow-wrap: anywhere;
+        }
+
+        .ppt-bar {
+          width: 110px;
+          height: 2px;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.1);
+          overflow: hidden;
+          position: relative;
+        }
+
+        .ppt-bar-fill {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          background: linear-gradient(90deg, var(--pc), rgba(255, 255, 255, 0.85));
+          box-shadow: 0 0 10px rgba(var(--pcr), 0.9);
+          animation: pptBar 780ms 80ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .ppt-scanline {
+          position: absolute;
+          top: -4px;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(var(--pcr), 0.3) 14%,
+            var(--pc) 38%,
+            rgba(255, 255, 255, 0.95) 50%,
+            var(--pc) 62%,
+            rgba(var(--pcr), 0.3) 86%,
+            transparent 100%
+          );
+          box-shadow:
+            0 0 18px 5px rgba(var(--pcr), 0.55),
+            0 0 44px 10px rgba(var(--pcr), 0.2);
+          animation: pptScan 820ms 60ms ease-in-out forwards;
+        }
+
+        @keyframes pptBdIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes pptFlood {
+          from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+          18% { opacity: 1; }
+          to { transform: translate(-50%, -50%) scale(32); opacity: 0.1; }
+        }
+
+        @keyframes pptRingBurst {
+          from { transform: scale(0.7); opacity: 1; }
+          to { transform: scale(28); opacity: 0; }
+        }
+
+        @keyframes pptConic1 {
+          from { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+          22% { opacity: 0.9; }
+          to { transform: translate(-50%, -50%) scale(1) rotate(265deg); opacity: 0; }
+        }
+
+        @keyframes pptConic2 {
+          from { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+          32% { opacity: 0.6; }
+          to { transform: translate(-50%, -50%) scale(1) rotate(-195deg); opacity: 0; }
+        }
+
+        @keyframes pptParticle {
+          from { transform: rotate(var(--pa)) translateX(0); opacity: 0; }
+          16% { opacity: 1; }
+          to { transform: rotate(var(--pa)) translateX(var(--pd, 120px)); opacity: 0; }
+        }
+
+        @keyframes pptContentIn {
+          from { opacity: 0; transform: translateY(18px) scale(0.93); filter: blur(7px); }
+          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        @keyframes pptOrbFloat {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-5px) scale(1.06); }
+        }
+
+        @keyframes pptOrbGlow {
+          0%, 100% { opacity: 0.55; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.22); }
+        }
+
+        @keyframes pptBar {
+          from { width: 0; }
+          to { width: 100%; }
+        }
+
+        @keyframes pptScan {
+          from { top: -4px; opacity: 0; }
+          9% { opacity: 1; }
+          91% { opacity: 1; }
+          to { top: 100vh; opacity: 0; }
         }
 
         .project-dots button[style*="18px"] {
@@ -590,6 +1005,18 @@ const ProjectsSection = () => {
           .project-shine,
           .project-detail,
           .project-cta:hover,
+          .ppt-root,
+          .ppt-backdrop,
+          .ppt-flood,
+          .ppt-ring,
+          .ppt-conic-1,
+          .ppt-conic-2,
+          .ppt-particle,
+          .ppt-content,
+          .ppt-orb,
+          .ppt-orb-glow,
+          .ppt-bar-fill,
+          .ppt-scanline,
           .project-dots button[style*="18px"] {
             animation: none !important;
           }
