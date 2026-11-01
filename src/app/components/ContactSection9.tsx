@@ -30,7 +30,7 @@ const ContactPage = () => {
     {
       name: t("contact.contactUs"),
       phoneNumber: "+963967212983",
-      email: "codarise468@gmail.com",
+      email: "info@codarise.online",
     },
   ];
 
